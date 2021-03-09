@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AddItem from './src/addItem';
+import SortedDisplay from './src/sortedDisplay';
 import Home from './src/home';
 import SearchResult from './src/searchResults';
-import AddItem from './src/addItem';
-import DisplayAll from './src/displayAll';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,7 +18,7 @@ export default function App() {
           <Tab.Screen name="Home" component={Home} />
           <Tab.Screen name="Search" component={SearchResult} />
           <Tab.Screen name="Add" component={AddItem} />
-          <Tab.Screen name="Library" component={DisplayAll} />
+          <Tab.Screen name="Library" component={SortedDisplay} />
         </Tab.Navigator>
       </NavigationContainer>
       <StatusBar style="auto" />

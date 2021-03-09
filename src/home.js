@@ -1,47 +1,33 @@
-import React, {useState} from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './screens/homeScreen';
 import Movie from './movie';
+import SortedDisplay from './sortedDisplay';
+
+const Stack = createStackNavigator();
 
 const Home = () => {
-    const [movies, setMovies] = useState(true);
-
     return (
-        <>
-            <Text>Movie Library</Text>
-            {movies &&
-                <>
-                    <Text>Recently Added</Text>
-                    <Movie />
-                </>
-            }
-
-            <Text>View By</Text>
-            <TouchableOpacity>
-                <Text>Title</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <Text>Genre</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <Text>Actor</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <Text>Format</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity>
-                <Text>Pick random movie</Text>
-            </TouchableOpacity>
-        </>
+        <Stack.Navigator
+            initialRouteName="Home View"
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: '#404040',
+                    borderBottomWidth: 0
+                },
+                headerTintColor: '#00C6CF',
+                headerTitleStyle: {
+                    fontSize: 48,
+                    fontWeight: 'bold',
+                    textAlign: 'center'
+                },
+            }}
+        >
+            <Stack.Screen component={HomeScreen} name="Home View" options={{ title: 'Movie Library' }} />
+            <Stack.Screen component={Movie} name="Movie Details"/>
+            <Stack.Screen component={SortedDisplay} name="Library"/>
+        </Stack.Navigator>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        marginHorizontal: 16,
-    }
-});
 
 export default Home;
