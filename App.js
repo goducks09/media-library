@@ -4,7 +4,7 @@ import { StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AddItem from './src/addItem';
-import SortedDisplay from './src/sortedDisplay';
+import SortedDisplay from './src/screens/sortedDisplay';
 import Home from './src/home';
 import SearchResult from './src/searchResults';
 

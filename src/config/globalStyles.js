@@ -1,28 +1,47 @@
 import styled from 'styled-components/native';
 
 export const StyledStandardSafeArea = styled.SafeAreaView`
-    background-color: #151515;
+    backgroundColor: #151515;
     flex: 1;
-    justify-content: 'space-around';
     padding: 16px;
+`;
+export const StyledSpacedSafeArea = styled(StyledStandardSafeArea)`
+    justifyContent: space-around;
+`;
+
+export const StyledCenteredSafeArea = styled(StyledStandardSafeArea)`
+    alignItems: center;
 `;
 
 export const StyledRegularText = styled.Text`
     color: #00C6CF;
-    font-size: 32px;
+    fontSize: 32px;
 `;
 
 export const StyledSmallText = styled(StyledRegularText)`
-    font-size: 20px;
+    fontSize: 20px;
+`;
+
+export const StyledPageHeader = styled(StyledRegularText)`
+    fontSize: 48px;
 `;
 
 export const StyledButtonText = styled(StyledRegularText)`
-    font-size: 28px;
+    fontSize: 28px;
 `;
 
+export const StyledSectionList = {
+    alignItems: 'flex-start',
+};
+
 export const StyledSectionHeading = styled(StyledRegularText)`
-    font-size: 28px;
-    margin-top: 20px;
+    fontSize: 28px;
+    marginTop: 20px;
+`;
+
+export const StyledSectionItem = styled(StyledRegularText)`
+    fontSize: 20px;
+    marginLeft: 10px;
 `;
 
 export const StyledRoundedButton = styled.TouchableOpacity`
@@ -34,9 +53,23 @@ export const StyledRoundedButton = styled.TouchableOpacity`
     width: 175px;
 `;
 
-export const StyledButtonGroup = styled.View`
+export const StyledRowView = styled.View`
     flexDirection: row;
     flexWrap: wrap;
     justifyContent: space-around;
     rowGap: 10px;
+`;
+
+export const StyledTextInput = styled.TextInput`
+    borderColor: #151515;
+    color: #00C6CF;
+`;
+
+export const StyledCenteredView = styled.View`
+    textAlign: center;
+`;
+
+export const StyledImage = styled.Image`
+    height: 138px;
+    width: 92px;
 `;

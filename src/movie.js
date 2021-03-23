@@ -1,13 +1,14 @@
 import React, { useReducer } from 'react';
-import { Image, Text } from 'react-native';
+import { Image, Text, View } from 'react-native';
+import { StyledRegularText, StyledSmallText, StyledCenteredSafeArea, StyledSectionItem } from './config/globalStyles';
 
 const initialState = {
     actors: [], //TODO needs to be an array of obj {firstName, lastName, fullName}
     category: [],
     dateAdded: '',
-    director: {},
+    director: [],
     format: [], //TODO needs to take input and comma separate (e.g. "4K Blu-ray Physical" => ["4K", "Blu-ray", "Physical"])
-    genre: '', //TODO make array for multiple options?
+    genre: [],
     imageURL: '',
     releaseDate: 0,
     runTime: 0,
@@ -22,27 +23,30 @@ const Movie = ({route}) => {
     const [movie, setMovie] = useReducer(reducer, initialState);
     const { movieDetails } = route.params;
     return (
-        <>
-            <Text>{movieDetails.title}</Text>
-
+        <StyledCenteredSafeArea>
             <Image
                 source={movieDetails.imageURL}
-                style={{height: 150, width: 150}}
+                style={{ height: 268, width: 182, resizeMode: 'contain' }}
             />
-            
-            <Text>Starring:</Text>
-            {movieDetails.actors.map((actor, index) => 
-                <Text key={index}>{actor.fullName}</Text>
-            )}
-
-            <Text>Runtime: {movieDetails.runTime}</Text>
-            <Text>Genre: {movieDetails.genre}</Text>
-            <Text>Format:
-                {movieDetails.format.map(format =>
-                    format
+            <View>
+                <StyledRegularText>Starring:</StyledRegularText>
+                {movieDetails.actors.map((actor, index) => 
+                    <StyledSectionItem key={index}>{actor.fullName}</StyledSectionItem>
                 )}
-            </Text>
-        </>
+
+                <StyledRegularText>Runtime: <StyledSmallText>{movieDetails.runTime} min</StyledSmallText></StyledRegularText>
+                <StyledRegularText>Genre:
+                        {movieDetails.genre.map((genre, index) =>
+                            <StyledSmallText key={index}> {genre},</StyledSmallText>
+                    )}
+                </StyledRegularText>
+                <StyledRegularText>Format:
+                    {movieDetails.format.map((format, index) =>
+                        <StyledSmallText key={index}> {format}</StyledSmallText>
+                    )}
+                </StyledRegularText>
+            </View>
+        </StyledCenteredSafeArea>
     );
 }
 

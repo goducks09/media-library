@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { Image, Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { StyledButtonGroup, StyledButtonText, StyledRegularText, StyledRoundedButton } from '../config/globalStyles';
+import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledImage } from '../config/globalStyles';
 import seedMovies from '../../movieData';
 
 const newMovies = seedMovies.movies;
@@ -27,36 +27,37 @@ const HomeScreen = ({navigation}) => {
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.container}>
                 {movies &&
-                    <>
+                    <StyledCenteredView>
                         <StyledRegularText>Recently Added</StyledRegularText>
                         <View style={styles.row}>
                             {movies.map(movie =>
                                 <Pressable key={movie.id} onPress={() => navigation.navigate('Movie Details', {movieDetails: movie})}>
-                                    <Image 
-                                        style={{height: 75, width: 50}}
+                                    <StyledImage
                                         source={{ uri: movie.imageURL }}
                                     />
                                 </Pressable>
                             )}    
                         </View>
-                    </>
+                    </StyledCenteredView>
                 }
 
-                <StyledRegularText>View By</StyledRegularText>
-                <StyledButtonGroup>
-                    <StyledRoundedButton onPress={handleNavigationPress}>
-                        <StyledButtonText>Title</StyledButtonText>
-                    </StyledRoundedButton>
-                    <StyledRoundedButton onPress={handleNavigationPress}>
-                        <StyledButtonText>Genre</StyledButtonText>
-                    </StyledRoundedButton>
-                    <StyledRoundedButton>
-                        <StyledButtonText onPress={handleNavigationPress}>Actor</StyledButtonText>
-                    </StyledRoundedButton>
-                    <StyledRoundedButton>
-                        <StyledButtonText onPress={handleNavigationPress}>Format</StyledButtonText>
-                    </StyledRoundedButton>
-                </StyledButtonGroup>
+                <StyledCenteredView>
+                    <StyledRegularText>View By</StyledRegularText>
+                    <StyledRowView>
+                        <StyledRoundedButton onPress={handleNavigationPress}>
+                            <StyledButtonText>Title</StyledButtonText>
+                        </StyledRoundedButton>
+                        <StyledRoundedButton onPress={handleNavigationPress}>
+                            <StyledButtonText>Genre</StyledButtonText>
+                        </StyledRoundedButton>
+                        <StyledRoundedButton>
+                            <StyledButtonText onPress={handleNavigationPress}>Actor</StyledButtonText>
+                        </StyledRoundedButton>
+                        <StyledRoundedButton>
+                            <StyledButtonText onPress={handleNavigationPress}>Format</StyledButtonText>
+                        </StyledRoundedButton>
+                    </StyledRowView>
+                </StyledCenteredView>
 
                 <StyledRoundedButton onPress={handleRandomMoviePress}>
                     <StyledButtonText>Pick random movie</StyledButtonText>

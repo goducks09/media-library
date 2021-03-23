@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screens/homeScreen';
 import Movie from './movie';
-import SortedDisplay from './sortedDisplay';
+import SortedDisplay from './screens/sortedDisplay';
 
 const Stack = createStackNavigator();
 
@@ -17,15 +17,15 @@ const Home = () => {
                 },
                 headerTintColor: '#00C6CF',
                 headerTitleStyle: {
-                    fontSize: 48,
+                    fontSize: 38,
                     fontWeight: 'bold',
                     textAlign: 'center'
                 },
             }}
         >
             <Stack.Screen component={HomeScreen} name="Home View" options={{ title: 'Movie Library' }} />
-            <Stack.Screen component={Movie} name="Movie Details"/>
-            <Stack.Screen component={SortedDisplay} name="Library"/>
+            <Stack.Screen component={Movie} name="Movie Details" options={({ route }) => ({ title: route.params.movieDetails.title })}/>
+            <Stack.Screen component={SortedDisplay} name="Library" />
         </Stack.Navigator>
     );
 }

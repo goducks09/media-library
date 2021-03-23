@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import { Text, TextInput, SectionList } from 'react-native';
+import { TextInput, SectionList, Pressable, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { StyledRegularText, StyledSectionHeading, StyledSmallText, StyledStandardSafeArea } from "./config/globalStyles";
-import seedMovies from '../movieData';
+import { StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledSmallText, StyledStandardSafeArea } from "../config/globalStyles";
+import seedMovies from '../../movieData';
+import styled from 'styled-components';
 
-const SortedDisplay = ({route}) => {
+const SortedDisplay = ({navigation, route}) => {
     //TODO when sort option is selected, send req to server for new sorted list
     const { movies } = seedMovies;
 
-    const { sortBy } = route.params;
+    const { sortBy } = route.params || {sortBy: 'title'};
     const [sections, setSections] = useState(null);
+    const [sortOrder, setSortOrder] = useState(sortBy.toLowerCase());
 
     useEffect(() => {
         sectionedList(sortBy);
@@ -70,30 +72,35 @@ const SortedDisplay = ({route}) => {
 
     return (
         <StyledStandardSafeArea>
-            <Text>Heading</Text>
-                <Picker
-                    style={{ height: 50, width: 100 }}
-                    onValueChange={(itemValue) => 
-                        sectionedList(itemValue)
-                    }
-                >
-                    <Picker.Item label="Title" value="title" />
-                    <Picker.Item label="Genre" value="genre" />
-                    <Picker.Item label="Format" value="format" />
-                    <Picker.Item label="Actor" value="actor" /> //TODO get list of actor last names and sorted
-                    <Picker.Item label="Director" value="director" />
-                </Picker>
-                
-                <TextInput
-                    onChangeText={() => console.log('text => onChangeText(text)')}
-                    value={console.log('value')}
-                />
+            <Picker
+                style={{ height: 50, width: 100 }}
+                onValueChange={(itemValue) => {
+                    sectionedList(itemValue);
+                    setSortOrder(itemValue);
+                }}
+                selectedValue={sortOrder}
+            >
+                <Picker.Item label="Title" value="title" />
+                <Picker.Item label="Genre" value="genre" />
+                <Picker.Item label="Format" value="format" />
+                <Picker.Item label="Actor" value="actor" /> //TODO get list of actor last names and sorted
+                <Picker.Item label="Director" value="director" />
+            </Picker>
+            
+            <TextInput
+                onChangeText={() => console.log('text => onChangeText(text)')}
+                value={console.log('value')}
+            />
             <SectionList
+                contentContainerStyle={StyledSectionList}
                 sections={sections}
                 renderSectionHeader={({ section: { heading } }) => <StyledSectionHeading>{heading}</StyledSectionHeading>}
-                renderItem={({ item }) => <StyledSmallText>{item.title}</StyledSmallText>}
+                renderItem={({ item }) =>
+                    <Pressable onPress={() => navigation.navigate('Movie Details', {movieDetails: item})}>
+                        <StyledSectionItem>{item.title}</StyledSectionItem>
+                    </Pressable>}
             />
-        </StyledStandardSafeArea>
+        </StyledStandardSafeArea >
     );
 }
 
