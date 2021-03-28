@@ -1,23 +1,22 @@
 import React, {useState} from 'react';
-import { Text, TextInput } from 'react-native';
+import { Text } from 'react-native';
+import SearchBar from './components/searchBar';
+import { StyledStandardSafeArea } from './config/globalStyles';
 
 const SearchResult = () => {
-    const [value, onChangeText] = useState('Useless Placeholder');
-    const [results, setResults] = useState([]);
+    const [searchValue, setSearchValue] = useState(null);
+    const [searchResults, setSearchResults] = useState([]);
 
     return (
-        <>
+        <StyledStandardSafeArea>
             <Text>Search</Text>
-            <TextInput
-                onChangeText={text => onChangeText(text)}
-                value={value}
-            />
-            {results &&
-                results.map(result => {
-                    <Movie />
+            <SearchBar stateUpdater={setSearchValue} />
+            {searchResults &&
+                searchResults.map(result => {
+                    <Text>Movie</Text>
                 })
             }
-        </>
+        </StyledStandardSafeArea>
   );
 }
 

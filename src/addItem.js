@@ -1,26 +1,24 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 import { Picker } from '@react-native-picker/picker';
-import { StyledButtonText, StyledCenteredSafeArea, StyledImage, StyledRoundedButton, StyledRowView, StyledSmallText, StyledTextInput } from './config/globalStyles';
+import { StyledButtonText, StyledCenteredSafeArea, StyledImage, StyledPressable, StyledRoundedButton, StyledRowView, StyledSmallText, StyledTextInput } from './config/globalStyles';
 import { FlatList, Pressable } from 'react-native';
+import TMDB_API_KEY from '../secrets';
+import SearchBar from './components/searchBar';
 
-const { REACT_NATIVE_TMDB_API_KEY } = process.env;
-
-const Item = ({ id, onPress, posterURL, title, year  }) => (
+const Item = ({ item, onPress }) => (
     <StyledRowView>
-        <Pressable onPress={onPress}>
+        <StyledPressable onPress={onPress}>
             <StyledSmallText>
-                {title}
+                {item.title} ({item.year})
             </StyledSmallText>
-            <StyledSmallText>
-                {year}
-            </StyledSmallText>
-            <StyledImage source={{ uri: posterURL }} />
-        </Pressable>
+            <StyledImage source={{ uri: item.posterURL }} />
+        </StyledPressable>
     </StyledRowView>  
 );
 
 const AddItem = () => {
+    const [itemToAdd, setItemToAdd] =useState(null);
     const [format, setFormat] = useState(null);
     const [pictureQuality, setPictureQuality] = useState(null);
     const [searchValue, setSearchValue] = useState(null);
@@ -34,10 +32,20 @@ const AddItem = () => {
     // MAKE SURE TO USE API KEY AS A HEADER AND NOT IN THE URL
     const getMoviesFromApiAsync = async (text) => {
         try {
-            let response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${REACT_NATIVE_TMDB_API_KEY}&language=en-US&query=${text}&page=1`);
+            let response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&language=en-US&query=${text}&page=1&adult=false`);
             let json = await response.json();
             console.log(json.results);
             return json.results;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const fetchSingleItemFromApi = async (id, media_type) => {
+        try {
+            let response = await fetch(`https://api.themoviedb.org/3/${media_type}/${id}?api_key=${TMDB_API_KEY}&language=en-US&adult=false&append_to_response=credits`);
+            let json = await response.json();
+            return json;
         } catch (error) {
             console.error(error);
         }
@@ -55,9 +63,11 @@ const AddItem = () => {
                         title = name;
                         release_date = first_air_date;
                     }
+                    if (title.length > 20) title = title.slice(0, 17).concat('...');
                     const year = release_date.substring(0, 4);
                     const resultItem = {
                         id,
+                        media_type,
                         title,
                         year,
                         posterURL: `https://image.tmdb.org/t/p/w92/${poster_path}`
@@ -65,7 +75,6 @@ const AddItem = () => {
                     resultList.push(resultItem);
                 }
             });
-            console.log(resultList);
             setSearchResults(resultList);
         });
     }
@@ -76,28 +85,23 @@ const AddItem = () => {
         []
     );
 
-    const onChangeText = (text) => {
-        setSearchValue(text);
-    };
-
-    const onPress = (e) => {
-        e.id
+    const onPress = async (id, media_type) => {
+        const item = await fetchSingleItemFromApi(id, media_type);
+        setItemToAdd(item);
     };
 
     // item template for FlatList
-    const renderItem = ({ item }) => <Item onPress={onPress} posterURL={item.posterURL} title={item.title} year={item.year} />;
+    const renderItem = ({ item }) => <Item onPress={() => onPress(item.id, item.media_type)} item={item} />;
 
     return (
         <StyledCenteredSafeArea>
-            <StyledTextInput
-                autoFocus={true}
-                onChangeText={text => onChangeText(text)}
-            />
+            <SearchBar stateUpdater={ setSearchValue } value={searchValue} />
             {
                 searchResults &&
                 <FlatList
                     data={searchResults}
                     renderItem={renderItem}
+                    keyExtractor={item => item.id}
                 />
             }
             <Picker
@@ -122,10 +126,10 @@ const AddItem = () => {
                 <Picker.Item label="Digital" value="digital" />
             </Picker>
 
-
             <StyledRoundedButton>
-                <StyledButtonText>Add to Collection</StyledButtonText>
+                <StyledButtonText>Add to Collection?</StyledButtonText>
             </StyledRoundedButton>
+            {itemToAdd && <Item item={itemToAdd} /> }
         </StyledCenteredSafeArea>
     );
 }

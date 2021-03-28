@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledImage } from '../config/globalStyles';
+import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledImage, StyledStandardSafeArea } from '../config/globalStyles';
 import seedMovies from '../../movieData';
 
 const newMovies = seedMovies.movies;
@@ -24,7 +24,7 @@ const HomeScreen = ({navigation}) => {
     }, []);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <StyledStandardSafeArea>
             <ScrollView contentContainerStyle={styles.container}>
                 {movies &&
                     <StyledCenteredView>
@@ -40,30 +40,30 @@ const HomeScreen = ({navigation}) => {
                         </View>
                     </StyledCenteredView>
                 }
-
-                <StyledCenteredView>
-                    <StyledRegularText>View By</StyledRegularText>
-                    <StyledRowView>
-                        <StyledRoundedButton onPress={handleNavigationPress}>
-                            <StyledButtonText>Title</StyledButtonText>
-                        </StyledRoundedButton>
-                        <StyledRoundedButton onPress={handleNavigationPress}>
-                            <StyledButtonText>Genre</StyledButtonText>
-                        </StyledRoundedButton>
-                        <StyledRoundedButton>
-                            <StyledButtonText onPress={handleNavigationPress}>Actor</StyledButtonText>
-                        </StyledRoundedButton>
-                        <StyledRoundedButton>
-                            <StyledButtonText onPress={handleNavigationPress}>Format</StyledButtonText>
-                        </StyledRoundedButton>
-                    </StyledRowView>
-                </StyledCenteredView>
-
-                <StyledRoundedButton onPress={handleRandomMoviePress}>
-                    <StyledButtonText>Pick random movie</StyledButtonText>
-                </StyledRoundedButton>
             </ScrollView>
-        </SafeAreaView>
+
+            <StyledCenteredView>
+                <StyledRegularText>View By</StyledRegularText>
+                <StyledRowView>
+                    <StyledRoundedButton onPress={handleNavigationPress}>
+                        <StyledButtonText>Title</StyledButtonText>
+                    </StyledRoundedButton>
+                    <StyledRoundedButton onPress={handleNavigationPress}>
+                        <StyledButtonText>Genre</StyledButtonText>
+                    </StyledRoundedButton>
+                    <StyledRoundedButton>
+                        <StyledButtonText onPress={handleNavigationPress}>Actor</StyledButtonText>
+                    </StyledRoundedButton>
+                    <StyledRoundedButton>
+                        <StyledButtonText onPress={handleNavigationPress}>Format</StyledButtonText>
+                    </StyledRoundedButton>
+                </StyledRowView>
+            </StyledCenteredView>
+
+            <StyledRoundedButton onPress={handleRandomMoviePress}>
+                <StyledButtonText>Pick random movie</StyledButtonText>
+            </StyledRoundedButton>
+        </StyledStandardSafeArea>
     );
 }
 
@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#151515',
         flex: 1,
-        justifyContent: 'space-around',
         padding: 16,
     },
     row: {

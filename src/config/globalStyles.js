@@ -60,6 +60,13 @@ export const StyledRowView = styled.View`
     rowGap: 10px;
 `;
 
+export const StyledPressable = styled.Pressable`
+    flexDirection: row;
+    justifyContent: space-between;
+    padding: 15px;
+    width: 85%;
+`;
+
 export const StyledTextInput = styled.TextInput`
     borderColor: #151515;
     color: #00C6CF;

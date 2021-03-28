@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import { TextInput, SectionList, Pressable, StyleSheet } from 'react-native';
+import { TextInput, SectionList, Pressable } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledSmallText, StyledStandardSafeArea } from "../config/globalStyles";
+import { StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledStandardSafeArea } from "../config/globalStyles";
 import seedMovies from '../../movieData';
-import styled from 'styled-components';
 
 const SortedDisplay = ({navigation, route}) => {
     //TODO when sort option is selected, send req to server for new sorted list
@@ -45,6 +44,7 @@ const SortedDisplay = ({navigation, route}) => {
         return obj;
     }, {});
 
+    // create sections by sort type for SectionList
     const sectionedList = (sortValue) => {
         let value = sortValue.toLowerCase();
         let sortType;
