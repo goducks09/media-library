@@ -34,7 +34,7 @@ const Movie = ({route}) => {
                     <StyledSectionItem key={index}>{actor.fullName}</StyledSectionItem>
                 )}
 
-                <StyledRegularText>Runtime: <StyledSmallText>{movieDetails.runTime} min</StyledSmallText></StyledRegularText>
+                {runTime && <StyledRegularText>Runtime: <StyledSmallText>{movieDetails.runTime} min</StyledSmallText></StyledRegularText>}
                 <StyledRegularText>Genre:
                         {movieDetails.genre.map((genre, index) =>
                             <StyledSmallText key={index}> {genre},</StyledSmallText>

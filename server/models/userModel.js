@@ -6,6 +6,7 @@ export const UserSchema = new Schema({
     dateAdded: { type: Date, default: Date.now },
     itemID: {type: mongoose.ObjectId, ref: "Item"},
     format: [String],
+    pictureQuality: [String],
     userTag: [String]
   }],
   password: String,

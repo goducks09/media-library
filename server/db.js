@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import routes from "./routes/itemRoutes";
+import apiRoutes from "./routes/apiRoutes";
+import itemRoutes from "./routes/itemRoutes";
 require('dotenv').config();
     
 const app = express();
@@ -18,7 +19,8 @@ mongoose.connect(process.env.ATLAS_URI, {
 //express setup
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-routes(app);
+apiRoutes(app);
+itemRoutes(app);
 
 // app.use((req, res, next) => {
 //     res.header(

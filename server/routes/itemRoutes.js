@@ -1,6 +1,6 @@
 import { addNewItem, getAllUserItems, getSingleUserItem } from "../controllers/userControllers";
 
-const routes = app => {
+const itemRoutes = app => {
     app.route('/items')
         .get(getAllUserItems)
         .post(addNewItem);
@@ -9,4 +9,4 @@ const routes = app => {
         .get(getSingleUserItem);
 };
 
-export default routes;
+export default itemRoutes;

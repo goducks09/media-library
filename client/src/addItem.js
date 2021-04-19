@@ -2,13 +2,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 import { Picker } from '@react-native-picker/picker';
 import { StyledButtonText, StyledCenteredSafeArea, StyledImage, StyledPressable, StyledRoundedButton, StyledRowView, StyledSmallText, StyledTextInput } from './config/globalStyles';
-import { FlatList, Pressable } from 'react-native';
-import TMDB_API_KEY from '../secrets';
+import { FlatList } from 'react-native';
 import SearchBar from './components/searchBar';
 
-const Item = ({ item, handlePress }) => (
+const Item = ({ item, onPress }) => (
     <StyledRowView>
-        <StyledPressable onPress={handlePress}>
+        <StyledPressable onPress={onPress}>
             <StyledSmallText>
                 {item.title} ({item.year})
             </StyledSmallText>
@@ -19,44 +18,37 @@ const Item = ({ item, handlePress }) => (
 
 const AddItem = () => {
     const [itemToAdd, setItemToAdd] =useState(null);
-    const [format, setFormat] = useState(null);
-    const [pictureQuality, setPictureQuality] = useState(null);
+    const [format, setFormat] = useState('Physical');
+    const [pictureQuality, setPictureQuality] = useState('SD');
     const [searchValue, setSearchValue] = useState(null);
     const [searchResults, setSearchResults] = useState(null);
 
     useEffect(() => {
         searchValue && debouncedGetDetails(searchValue);
     }, [searchValue]);
-
-    // send the query parameters but do the api call from backend
-    // MAKE SURE TO USE API KEY AS A HEADER AND NOT IN THE URL
+    
     const getItemsFromApiAsync = async (text) => {
         try {
-            let response = await fetch(`http://localhost:3000/items`, {
+            let response = await fetch(`http://localhost:3000/search`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    userID: '6071e1016ac38867d5e6e04f',
                     searchText: text
                 })
             });
             let json = await response.json();
-            console.log(json);
-            // let response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&language=en-US&query=${text}&page=1&adult=false`);
-            // let json = await response.json();
-            // console.log(json.results);
-            // return json.results;
+            return json;
         } catch (error) {
             console.error(error);
         }
     };
 
-    const fetchSingleItemFromApi = async (id, media_type) => {
+    const fetchSingleItemFromApi = async ({ id, media_type }) => {
         try {
-            let response = await fetch(`https://api.themoviedb.org/3/${media_type}/${id}?api_key=${TMDB_API_KEY}&language=en-US&adult=false&append_to_response=credits`);
+            let response = await fetch(`http://localhost:3000/search/${media_type}/${id}`);
             let json = await response.json();
             return json;
         } catch (error) {
@@ -81,9 +73,9 @@ const AddItem = () => {
                     const resultItem = {
                         id,
                         media_type,
+                        posterURL: `https://image.tmdb.org/t/p/w92/${poster_path}`,
                         title,
-                        year,
-                        posterURL: `https://image.tmdb.org/t/p/w92/${poster_path}`
+                        year
                     };
                     resultList.push(resultItem);
                 }
@@ -98,13 +90,36 @@ const AddItem = () => {
         []
     );
 
-    const handlePress = async (id, media_type) => {
-        const item = await fetchSingleItemFromApi(id, media_type);
+    const handlePress = item => {
         setItemToAdd(item);
     };
 
+    // Query TMDB to get additional item details, then save to mongoDB
+    const handleSubmit = async () => {
+        try {
+            const item = await fetchSingleItemFromApi(itemToAdd);
+            let response = await fetch(`http://localhost:3000/items`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userID: '6071e1016ac38867d5e6e04f',
+                    item,
+                    format,
+                    pictureQuality
+                })
+            });
+            let json = await response.json();
+            return json;
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     // item template for FlatList
-    const renderItem = ({ item }) => <Item onPress={() => handlePress(item.id, item.media_type)} item={item} />;
+    const renderItem = ({ item }) => <Item onPress={() => handlePress(item)} item={item} />;
 
     return (
         <StyledCenteredSafeArea>
@@ -114,35 +129,48 @@ const AddItem = () => {
                 <FlatList
                     data={searchResults}
                     renderItem={renderItem}
-                    keyExtractor={item => item.id}
+                    keyExtractor={item => `${item.id}`}
                 />
             }
-            <Picker
-                selectedValue={pictureQuality}
-                style={{ height: 50, width: 150 }}
-                onValueChange={(itemValue) => {
-                    setPictureQuality(itemValue);
-                }
-                }>
-                <Picker.Item label="SD" value="sd" />
-                <Picker.Item label="HD" value="hd" />
-                <Picker.Item label="4K" value="4k" />
-            </Picker>
 
-            <Picker
-                selectedValue={format}
-                style={{ height: 50, width: 150 }}
-                onValueChange={(itemValue) =>
-                    setFormat(itemValue)
-                }>
-                <Picker.Item label="Physical" value="physical" />
-                <Picker.Item label="Digital" value="digital" />
-            </Picker>
+            {
+                itemToAdd &&
 
-            <StyledRoundedButton>
-                <StyledButtonText>Add to Collection?</StyledButtonText>
-            </StyledRoundedButton>
-            {itemToAdd && <Item item={itemToAdd} /> }
+                <>
+                    <StyledSmallText>Choose quality: </StyledSmallText>
+                    <Picker
+                        selectedValue={pictureQuality}
+                        style={{ height: 50, width: 150 }}
+                        onValueChange={(itemValue) => {
+                            setPictureQuality(itemValue);
+                        }
+                        }>
+                        <Picker.Item label="SD" value="SD" />
+                        <Picker.Item label="HD" value="HD" />
+                        <Picker.Item label="4K" value="4K" />
+                    </Picker>
+
+                    <StyledSmallText>Choose format: </StyledSmallText>
+                    <Picker
+                        selectedValue={format}
+                        style={{ height: 50, width: 150 }}
+                        onValueChange={(itemValue) =>
+                            setFormat(itemValue)
+                        }>
+                        <Picker.Item label="Physical" value="Physical" />
+                        <Picker.Item label="Digital" value="Digital" />
+                    </Picker>
+                    
+                    <StyledImage source={{ uri: itemToAdd.posterURL }} />
+                    <StyledSmallText>
+                        {itemToAdd.title} ({itemToAdd.year})
+                    </StyledSmallText>
+
+                    <StyledRoundedButton onPress={handleSubmit}>
+                        <StyledButtonText>Add to Collection?</StyledButtonText>
+                    </StyledRoundedButton>
+                </>
+            }
         </StyledCenteredSafeArea>
     );
 }

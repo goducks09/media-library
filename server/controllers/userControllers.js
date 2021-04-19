@@ -5,7 +5,6 @@ import { UserSchema } from "../models/userModel";
 const Item = mongoose.model('Item', ItemSchema);
 const User = mongoose.model('User', UserSchema);
 
-
 export const addNewItem = async (req, res) => {
     // Get user for later use
     let currentUser;
@@ -16,39 +15,42 @@ export const addNewItem = async (req, res) => {
 
         currentUser = user;
     });
+    
+    // Function to save user item
+    const saveUserItem = async item => {
+        currentUser.ownedItems.push({
+            format: req.body.format,
+            itemID: item._id,
+            pictureQuality: req.body.pictureQuality
+        });
+        const saveStatus = await currentUser.save();
+        return saveStatus ? { message: 'Item added successfully!' } : err;
+    };
 
     // Check if Item has already been added to DB
-    Item.findOne({ tmdbID: req.body.tmdbID }, (err, item) => {
+    Item.findOne({ tmdbID: req.body.item.tmdbID }, async (err, item) => {
         if (err) res.send(err);
 
         // If item doesn't already exist, add to DB
         if (!item) {
-            const newItem = new Item(req.body);
+            const newItem = new Item(req.body.item);
 
             newItem.save((err, item) => {
                 if (err) res.send(err);
             });
 
             //Since the item wasn't in the DB, user couldn't already own. Add to user
-            currentUser.ownedItems.push({
-                format: newItem.format,
-                itemID: newItem._id
-            });
-            currentUser.save((err, user) => {
-                res.send(err ? err : { message: 'Item added to your library!' });
-            });
+            const saveResult = await saveUserItem(newItem);
+            res.json(saveResult);
+            
         // Else check if user already owns item and add if not
         } else {
-            const userOwned = currentUser.ownedItems.some(e => e.item === item.itemID);
+
+            const userOwned = currentUser.ownedItems.some(e => e.itemID === item.itemID);
 
             if (!userOwned) {
-                currentUser.ownedItems.push({
-                    format: req.body.format,
-                    itemID: item._id
-                });
-                currentUser.save((err, user) => {
-                    res.send(err ? err : { message: 'Item added to your library!' });
-                });
+                const saveResult = await saveUserItem(item);
+                res.json(saveResult);
             } else {
                 res.send({ message: 'This item is already in your library' })
             }
