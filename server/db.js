@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import apiRoutes from "./routes/apiRoutes";
 import itemRoutes from "./routes/itemRoutes";
+import userRoutes from "./routes/userRoutes";
 require('dotenv').config();
     
 const app = express();
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 apiRoutes(app);
 itemRoutes(app);
+userRoutes(app);
 
 // app.use((req, res, next) => {
 //     res.header(

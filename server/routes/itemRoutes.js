@@ -1,4 +1,4 @@
-import { addNewItem, getAllUserItems, getSingleUserItem } from "../controllers/userControllers";
+import { addNewItem, getAllUserItems, getSingleUserItem } from "../controllers/itemControllers";
 
 const itemRoutes = app => {
     app.route('/items')

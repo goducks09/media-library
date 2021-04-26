@@ -22,6 +22,7 @@ export const tmdbSingleSearch = async (req, res) => {
     }
 }
 
+// Query TMDB and manipulate return to only pass through pertinent data for saving to Mongo
 const buildItemModel = (item, mediaType) => {
     if (mediaType === 'tv') {
         item.title = item.name;
