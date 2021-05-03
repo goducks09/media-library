@@ -13,7 +13,7 @@ const SearchResult = () => {
             <SearchBar stateUpdater={setSearchValue} />
             {searchResults &&
                 searchResults.map(result => {
-                    <Text>Movie</Text>
+                    <Text>Item</Text>
                 })
             }
         </StyledStandardSafeArea>

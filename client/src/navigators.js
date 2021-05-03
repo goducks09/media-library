@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screens/homeScreen';
-import Movie from './movie';
+import Item from './item';
 import SortedDisplay from './screens/libraryScreen';
 import AddItem from './addItem';
 
@@ -26,8 +26,8 @@ const Home = () => {
                 },
             }}
         >
-            <HomeStack.Screen component={HomeScreen} name="Home View" options={{ title: 'Movie Library' }} />
-            <HomeStack.Screen component={Movie} name="Movie Details" options={({ route }) => ({ title: route.params.movieDetails.title })} />
+            <HomeStack.Screen component={HomeScreen} name="Home View" options={{ title: 'Media Library' }} />
+            <HomeStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.title })} />
             <HomeStack.Screen component={SortedDisplay} name="Library" />
         </HomeStack.Navigator>
     );
@@ -51,7 +51,7 @@ export const Library = () => {
             }}
         >
             <LibraryStack.Screen component={SortedDisplay} name="Library" />
-            <LibraryStack.Screen component={Movie} name="Movie Details" options={({ route }) => ({ title: route.params.movieDetails.title })} />
+            <LibraryStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.title })} />
         </LibraryStack.Navigator>
     );
 };
@@ -74,7 +74,7 @@ export const Add = () => {
             }}
         >
             <AddItemStack.Screen component={AddItem} name="Add" />
-            <AddItemStack.Screen component={Movie} name="Movie Details" options={({ route }) => ({ title: route.params.movieDetails.title })} />
+            <AddItemStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.title })} />
         </AddItemStack.Navigator>
     );
 };

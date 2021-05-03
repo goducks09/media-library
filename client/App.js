@@ -1,31 +1,51 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
+import { makeRedirectUri, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
 import { GOOGLE_CLIENT_ID_EXPO, GOOGLE_CLIENT_ID_WEB } from './secrets';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home, {Add, Library} from './src/navigators';
 import SearchResult from './src/searchResults';
-import { Button } from 'react-native';
+import { Button, Platform, Text } from 'react-native';
 import { StyledStandardSafeArea, StyledTextInput } from './src/config/globalStyles';
 
+export const UserContext = React.createContext();
 const Tab = createBottomTabNavigator();
 
 WebBrowser.maybeCompleteAuthSession();
+const useProxy = Platform.select({ web: false, default: true });
 
 export default function App() {
   const [userID, setUserID] = useState(null);
   const [userItems, setUserItems] = useState(null);
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId: GOOGLE_CLIENT_ID_EXPO,
-    webClientId: GOOGLE_CLIENT_ID_WEB
-  });
+  
+  const discovery = useAutoDiscovery('https://dev-14030156.okta.com/oauth2/default');
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      clientId: '0oannsb0s70Gj7qpF5d6',
+      scopes: ['openid', 'profile'],
+      // For usage in managed apps using the proxy
+      redirectUri: makeRedirectUri({
+        // For usage in bare and standalone
+        native: 'com.okta.dev-14030156.okta.com:/callback',
+        useProxy,
+      }),
+    },
+    discovery
+  );
   const firstRender = useRef(true);
 
   useEffect(() => {
-    googleLogin();
+    if (response?.type === 'success') {
+      const { code } = response.params;
+      console.log(code);
+    }
   }, [response]);
+
+  // useEffect(() => {
+  //   googleLogin();
+  // }, [response]);
   
   useEffect(() => {
     // Prevent request from sending prior to login being clicked
@@ -40,7 +60,8 @@ export default function App() {
   const googleLogin = async () => {
     try {
       if (response?.type === 'success') {
-        const { authentication } = response;
+        const test = response;
+        console.log(test);
         let apiResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
           headers: {
             Authorization: `Bearer ${authentication.accessToken}`
@@ -59,7 +80,7 @@ export default function App() {
     }
   };
 
-  const getUserInfoAsync = async userID => {
+  const getUserInfoAsync = async id => {
     try {
       let response = await fetch(`http://localhost:3000/login`, {
         method: 'POST',
@@ -68,24 +89,24 @@ export default function App() {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            userID: userID
+            userID: id
         })
       });
       let json = await response.json();
-      setUserItems(json.ownedItems);
+      setUserItems(json);
     } catch (err) {
       throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
     }
   };
 
   const handleSignup = () => {
-    setUserID('6071e1016ac38867d5e6e04f');
+    setUserID('test1');
   };
 
   return (
     <>
-      {userID ? (
-        <>
+      {userItems ? (
+        <UserContext.Provider value={userItems}>
           <NavigationContainer>
             <Tab.Navigator>
               <Tab.Screen name="Home" component={Home} />
@@ -95,7 +116,7 @@ export default function App() {
             </Tab.Navigator>
           </NavigationContainer>
           <StatusBar style="auto" />
-        </>
+        </UserContext.Provider>
       ) : (
         <StyledStandardSafeArea>
           <StyledTextInput
@@ -108,13 +129,10 @@ export default function App() {
           <Button
             disabled={!request}
             title="Login with Google"
-            onPress={() => {
-              promptAsync();
-              }}
+            onPress={handleSignup}
           />
         </StyledStandardSafeArea>
-      )
-
+        )
       }
     </>
   );

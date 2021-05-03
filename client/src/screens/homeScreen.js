@@ -1,39 +1,34 @@
-import React, {useState, useEffect} from 'react';
-import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
+import React, {useContext} from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledImage, StyledStandardSafeArea } from '../config/globalStyles';
-import seedMovies from '../../movieData';
+import { UserContext } from "../../App";
 
-const newMovies = seedMovies.movies;
 
 const HomeScreen = ({navigation}) => {
-    const [movies, setMovies] = useState(null);
-
+    const items = useContext(UserContext);
+    
     const handleRandomMoviePress = () => {
-        //TODO make sure value doesn't duplicate and return same movie twice
-        const randomIndex = Math.floor(Math.random() * Math.floor(movies.length));
-        navigation.navigate('Movie Details', { movieDetails: movies[randomIndex] });
+        //TODO make sure value doesn't duplicate and return same item twice
+        const randomIndex = Math.floor(Math.random() * Math.floor(items.length));
+        navigation.navigate('item Details', { itemDetails: items[randomIndex] });
     };
-
+    
     const handleNavigationPress = (e) => {
         navigation.navigate('Library', { sortBy: e.target.innerText });
     };
 
-    useEffect(() => { 
-        setMovies(newMovies);
-    }, []);
-
     return (
         <StyledStandardSafeArea>
             <ScrollView contentContainerStyle={styles.container}>
-                {movies &&
+                {items &&
                     <StyledCenteredView>
                         <StyledRegularText>Recently Added</StyledRegularText>
                         <View style={styles.row}>
-                            {movies.map(movie =>
-                                <Pressable key={movie.id} onPress={() => navigation.navigate('Movie Details', {movieDetails: movie})}>
+                            {items.map(item =>
+                                <Pressable key={item._id} onPress={() => navigation.navigate('Item Details', {itemDetails: item.itemID})}>
                                     <StyledImage
-                                        source={{ uri: movie.imageURL }}
+                                        source={{ uri: item.itemID.imageURL }}
                                     />
                                 </Pressable>
                             )}    
@@ -61,7 +56,7 @@ const HomeScreen = ({navigation}) => {
             </StyledCenteredView>
 
             <StyledRoundedButton onPress={handleRandomMoviePress}>
-                <StyledButtonText>Pick random movie</StyledButtonText>
+                <StyledButtonText>Pick random item</StyledButtonText>
             </StyledRoundedButton>
         </StyledStandardSafeArea>
     );

@@ -19,35 +19,37 @@ const reducer = () => {
     console.log('reducer');
 }
 
-const Movie = ({route}) => {
+const Item = ({route}) => {
     const [movie, setMovie] = useReducer(reducer, initialState);
-    const { movieDetails } = route.params;
+    const { itemDetails } = route.params;
     return (
         <StyledCenteredSafeArea>
             <Image
-                source={movieDetails.imageURL}
+                source={itemDetails.imageURL}
                 style={{ height: 268, width: 182, resizeMode: 'contain' }}
             />
             <View>
                 <StyledRegularText>Starring:</StyledRegularText>
-                {movieDetails.actors.map((actor, index) => 
+                {/* only get first 5 actors to show */}
+                {itemDetails.actors.slice(0,5).map((actor, index) => 
                     <StyledSectionItem key={index}>{actor.fullName}</StyledSectionItem>
                 )}
 
-                {runTime && <StyledRegularText>Runtime: <StyledSmallText>{movieDetails.runTime} min</StyledSmallText></StyledRegularText>}
+                {/* If an item is a tv show, it won't have a run time, so don't display */}
+                {itemDetails.runTime && <StyledRegularText>Runtime: <StyledSmallText>{itemDetails.runTime} min</StyledSmallText></StyledRegularText>}
                 <StyledRegularText>Genre:
-                        {movieDetails.genre.map((genre, index) =>
+                        {itemDetails.genre.map((genre, index) =>
                             <StyledSmallText key={index}> {genre},</StyledSmallText>
                     )}
                 </StyledRegularText>
-                <StyledRegularText>Format:
-                    {movieDetails.format.map((format, index) =>
+                {/* <StyledRegularText>Format:
+                    {itemDetails.format.map((format, index) =>
                         <StyledSmallText key={index}> {format}</StyledSmallText>
                     )}
-                </StyledRegularText>
+                </StyledRegularText> */}
             </View>
         </StyledCenteredSafeArea>
     );
 }
 
-export default Movie;
+export default Item;
