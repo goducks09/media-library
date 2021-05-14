@@ -5,12 +5,33 @@ export const tmdbMultiSearch = async (req, res) => {
     try {
         let response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${process.env.TMDB_API_KEY}&language=en-US&query=${req.body.searchText}&page=1&adult=false`);
         let json = await response.json();
-        res.json(json.results);
+        let resultList = [];
+        json.results.forEach(result => {
+                if (result.media_type !== 'person') {
+                    let { first_air_date, id, media_type, name, poster_path, release_date, title } = result;
+                    if (!title) title = name;
+                    if (!release_date) release_date = first_air_date;
+                    if (title.length > 20) title = title.slice(0, 17).concat('...');
+                    let year;
+                    release_date ? year = release_date.substring(0, 4) : year = '';
+                    poster_path === null ? poster_path = 'https://via.placeholder.com/92x138.png?text=No+Image+Available' : poster_path = `https://image.tmdb.org/t/p/w92/${poster_path}`;
+                    const resultItem = {
+                        id,
+                        media_type,
+                        posterURL: poster_path,
+                        title,
+                        year
+                    };
+                    resultList.push(resultItem);
+                }
+        });
+        res.json(resultList);
     } catch (err) {
         console.error(err);
     }
 };
 
+// Query TMDB and manipulate return to only pass through pertinent data for saving to Mongo
 export const tmdbSingleSearch = async (req, res) => {
     try {
         let response = await fetch(`https://api.themoviedb.org/3/${req.params.mediaType}/${req.params.itemID}?api_key=${process.env.TMDB_API_KEY}&language=en-US&adult=false&append_to_response=credits`);
@@ -22,7 +43,6 @@ export const tmdbSingleSearch = async (req, res) => {
     }
 }
 
-// Query TMDB and manipulate return to only pass through pertinent data for saving to Mongo
 const buildItemModel = (item, mediaType) => {
     if (mediaType === 'tv') {
         item.title = item.name;
@@ -41,8 +61,8 @@ const buildItemModel = (item, mediaType) => {
     });
 
     const genre = item.genres.map(genre => genre.name);
-
-    const imageURL = `https://image.tmdb.org/t/p/w92/${item.poster_path}`;
+    let imageURL = '';
+    item.poster_path === 'null' ? imageURL = 'https://via.placeholder.com/92x138.png?text=No+Image+Available' : imageURL = `https://image.tmdb.org/t/p/w92/${item.poster_path}`;
 
     const releaseDate = item.release_date.substring(0, 4);
     const runTime = item.runtime;

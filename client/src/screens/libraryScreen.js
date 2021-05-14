@@ -6,7 +6,7 @@ import { UserContext } from "../../App";
 
 const SortedDisplay = ({navigation, route}) => {
     //TODO when sort option is selected, send req to server for new sorted list
-    const items = useContext(UserContext);
+    const {userItems} = useContext(UserContext);
 
     const { sortBy } = route.params || {sortBy: 'title'};
     const [sections, setSections] = useState(null);
@@ -14,10 +14,10 @@ const SortedDisplay = ({navigation, route}) => {
 
     useEffect(() => {
         sectionedList(sortBy);
-    }, []);
+    }, [userItems]);
 
     // create object of all movies where the key = first letter of the title and the value = array of all movies starting with the key
-    const sortTitle = items.reduce((obj, item) => {
+    const sortTitle = userItems.reduce((obj, item) => {
         let firstLetter = item.itemID.title[0].toUpperCase();
         const ascii = firstLetter.charCodeAt();
         if (ascii >= 48 && ascii <= 57) {
@@ -30,14 +30,14 @@ const SortedDisplay = ({navigation, route}) => {
     }, {});
 
     // create object of all movies where key = genre and value = array of all movies in genre. Movie may appear in more than one genre
-    const sortGenre = items.reduce((obj, item) => {
+    const sortGenre = userItems.reduce((obj, item) => {
         item.itemID.genre.forEach(genre => {
             obj[genre] = [...(obj[genre] || []), item];
         });
         return obj;
     }, {});
 
-    const sortActor = items.reduce((obj, item) => {
+    const sortActor = userItems.reduce((obj, item) => {
         item.itemID.actors.forEach(actor => {
             obj[actor.fullName] = [...(obj[actor.fullName] || []), item];
         });

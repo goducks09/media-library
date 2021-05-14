@@ -17,6 +17,7 @@ WebBrowser.maybeCompleteAuthSession();
 const useProxy = Platform.select({ web: false, default: true });
 
 export default function App() {
+  const [userName, setUserName] = useState(null);
   const [userID, setUserID] = useState(null);
   const [userItems, setUserItems] = useState(null);
   
@@ -53,8 +54,8 @@ export default function App() {
       firstRender.current = false;
       return;
     }
-    getUserInfoAsync(userID);
-  }, [userID]);
+    getUserInfoAsync(userName);
+  }, [userName]);
   
   // User authenticates via Google and then use returned token to request user's Google profile
   const googleLogin = async () => {
@@ -73,7 +74,7 @@ export default function App() {
         }
 
         let json = await apiResponse.json();
-        setUserID(json.email);
+        setUserName(json.email);
       }
     } catch (err) {
       throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
@@ -89,24 +90,32 @@ export default function App() {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            userID: id
+            userName: id
         })
       });
       let json = await response.json();
-      setUserItems(json);
+      setUserID(json.userID);
+      setUserItems(json.userItems);
     } catch (err) {
       throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
     }
   };
 
   const handleSignup = () => {
-    setUserID('test1');
+    setUserName('test1');
+  };
+
+  const contextValue = {
+    userID,
+    userItems,
+    userName,
+    updateItemList: (items) => setUserItems(items)
   };
 
   return (
     <>
       {userItems ? (
-        <UserContext.Provider value={userItems}>
+        <UserContext.Provider value={contextValue}>
           <NavigationContainer>
             <Tab.Navigator>
               <Tab.Screen name="Home" component={Home} />

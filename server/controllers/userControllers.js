@@ -10,7 +10,7 @@ export const addNewUser = (req, res) => {
 
 // On login, get user data and store in context
 export const getUserData = (req, res) => {
-    User.findOne({ username: req.body.userID })
+    User.findOne({ username: req.body.userName })
     .populate({
         path: 'ownedItems',
         populate: {
@@ -18,14 +18,18 @@ export const getUserData = (req, res) => {
         }
     })
     .exec((err, user) => {
-            if (err) {
-                res.send(err);
-            } else if (user === null || user === undefined) {
-                res.send({ message: 'User not found' });
-            } else {
-                res.json(user.ownedItems);
+        if (err) {
+            res.send(err);
+        } else if (user === null || user === undefined) {
+            res.send({ message: 'User not found' });
+        } else {
+            const userData = {
+                userID: user._id,
+                userItems: user.ownedItems
             }
-        });
+            res.json(userData);
+        }
+    });
 };
 
 // Delete a user

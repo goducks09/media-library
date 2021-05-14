@@ -13,6 +13,7 @@ const port = 3000;
 
 //mongoDB connection
 mongoose.connect(process.env.ATLAS_URI, {
+  useFindAndModify: false,
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
