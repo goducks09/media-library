@@ -6,12 +6,13 @@ import { UserContext } from "../../App";
 
 
 const HomeScreen = ({navigation}) => {
-    const {userItems} = useContext(UserContext);
+    const { userItems } = useContext(UserContext);
+    console.log('items: ', userItems);
     
     const handleRandomMoviePress = () => {
         //TODO make sure value doesn't duplicate and return same item twice
         const randomIndex = Math.floor(Math.random() * Math.floor(userItems.length));
-        navigation.navigate('item Details', { itemDetails: userItems[randomIndex] });
+        navigation.navigate('Item Details', { itemDetails: userItems[randomIndex] });
     };
     
     const handleNavigationPress = (e) => {
@@ -26,7 +27,7 @@ const HomeScreen = ({navigation}) => {
                         <StyledRegularText>Recently Added</StyledRegularText>
                         <View style={styles.row}>
                             {userItems.map(item =>
-                                <Pressable key={item._id} onPress={() => navigation.navigate('Item Details', {itemDetails: item.itemID})}>
+                                <Pressable key={item._id} onPress={() => navigation.navigate('Item Details', {itemDetails: item})}>
                                     <StyledImage
                                         source={{ uri: item.itemID.imageURL }}
                                     />

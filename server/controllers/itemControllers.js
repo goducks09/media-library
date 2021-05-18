@@ -14,8 +14,7 @@ export const addNewItem = async (req, res) => {
     
     // format item to match MongoDB model
     const itemToAdd = {
-        format: req.body.format,
-        pictureQuality: req.body.pictureQuality,
+        format: `${req.body.pictureQuality} ${req.body.mediaType}`,
         itemID: item._id
     };
     

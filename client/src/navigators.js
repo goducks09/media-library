@@ -27,7 +27,7 @@ const Home = () => {
             }}
         >
             <HomeStack.Screen component={HomeScreen} name="Home View" options={{ title: 'Media Library' }} />
-            <HomeStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.title })} />
+            <HomeStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.itemID.title })} />
             <HomeStack.Screen component={SortedDisplay} name="Library" />
         </HomeStack.Navigator>
     );
@@ -51,7 +51,7 @@ export const Library = () => {
             }}
         >
             <LibraryStack.Screen component={SortedDisplay} name="Library" />
-            <LibraryStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.title })} />
+            <LibraryStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.itemID.title })} />
         </LibraryStack.Navigator>
     );
 };
@@ -74,7 +74,7 @@ export const Add = () => {
             }}
         >
             <AddItemStack.Screen component={AddItem} name="Add" />
-            <AddItemStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.title })} />
+            <AddItemStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.itemID.title })} />
         </AddItemStack.Navigator>
     );
 };

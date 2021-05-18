@@ -20,7 +20,7 @@ const Item = ({ item, onPress }) => (
 
 const AddItem = () => {
     const [itemToAdd, setItemToAdd] =useState(null);
-    const [format, setFormat] = useState('Physical');
+    const [mediaType, setMediaType] = useState('Physical');
     const [pictureQuality, setPictureQuality] = useState('SD');
     const [searchValue, setSearchValue] = useState(null);
     const [searchResults, setSearchResults] = useState(null);
@@ -115,7 +115,7 @@ const AddItem = () => {
                 body: JSON.stringify({
                     userID,
                     item,
-                    format,
+                    mediaType,
                     pictureQuality
                 })
             });
@@ -164,10 +164,10 @@ const AddItem = () => {
 
                     <StyledSmallText>Choose format: </StyledSmallText>
                     <Picker
-                        selectedValue={format}
+                        selectedValue={mediaType}
                         style={{ height: 50, width: 150 }}
                         onValueChange={(itemValue) =>
-                            setFormat(itemValue)
+                            setMediaType(itemValue)
                         }>
                         <Picker.Item label="Physical" value="Physical" />
                         <Picker.Item label="Digital" value="Digital" />

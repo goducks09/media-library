@@ -22,31 +22,32 @@ const reducer = () => {
 const Item = ({route}) => {
     const [movie, setMovie] = useReducer(reducer, initialState);
     const { itemDetails } = route.params;
+    console.log(itemDetails);
     return (
         <StyledCenteredSafeArea>
             <Image
-                source={itemDetails.imageURL}
+                source={itemDetails.itemID.imageURL}
                 style={{ height: 268, width: 182, resizeMode: 'contain' }}
             />
             <View>
                 <StyledRegularText>Starring:</StyledRegularText>
                 {/* only get first 5 actors to show */}
-                {itemDetails.actors.slice(0,5).map((actor, index) => 
+                {itemDetails.itemID.actors.slice(0,5).map((actor, index) => 
                     <StyledSectionItem key={index}>{actor.fullName}</StyledSectionItem>
                 )}
 
                 {/* If an item is a tv show, it won't have a run time, so don't display */}
-                {itemDetails.runTime && <StyledRegularText>Runtime: <StyledSmallText>{itemDetails.runTime} min</StyledSmallText></StyledRegularText>}
+                {itemDetails.itemID.runTime && <StyledRegularText>Runtime: <StyledSmallText>{itemDetails.itemID.runTime} min</StyledSmallText></StyledRegularText>}
                 <StyledRegularText>Genre:
-                        {itemDetails.genre.map((genre, index) =>
-                            <StyledSmallText key={index}> {genre},</StyledSmallText>
+                        {itemDetails.itemID.genre.map((genre, index) =>
+                            <StyledSmallText key={index}>{(index ? ', ' : ' ') + genre}</StyledSmallText>
                     )}
                 </StyledRegularText>
-                {/* <StyledRegularText>Format:
+                <StyledRegularText>Format:
                     {itemDetails.format.map((format, index) =>
                         <StyledSmallText key={index}> {format}</StyledSmallText>
                     )}
-                </StyledRegularText> */}
+                </StyledRegularText>
             </View>
         </StyledCenteredSafeArea>
     );
