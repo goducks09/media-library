@@ -29,6 +29,16 @@ const SortedDisplay = ({navigation, route}) => {
         }
     }, {});
 
+    // create object where key = name and value = array of all movies they star in. Takes arg to look at actor or director
+    const sortName = personCategory => {
+        return userItems.reduce((obj, item) => {
+            item.itemID[personCategory].forEach(person => {
+                obj[person.fullName] = [...(obj[person.fullName] || []), item];
+            });
+            return obj;
+        }, {});
+    };
+
     // create object of all movies where key = genre and value = array of all movies in genre. Movie may appear in more than one genre
     const sortGenre = userItems.reduce((obj, item) => {
         item.itemID.genre.forEach(genre => {
@@ -36,13 +46,15 @@ const SortedDisplay = ({navigation, route}) => {
         });
         return obj;
     }, {});
-
-    const sortActor = userItems.reduce((obj, item) => {
-        item.itemID.actors.forEach(actor => {
-            obj[actor.fullName] = [...(obj[actor.fullName] || []), item];
+    
+    // create object of all movies where key = format and value = array of all movies in that format.
+    const sortFormat = userItems.reduce((obj, item) => {
+        item.format.forEach(format => {
+            obj[format] = [...(obj[format] || []), item];
         });
         return obj;
     }, {});
+    
 
     // create sections by sort type for SectionList
     const sectionedList = (sortValue) => {
@@ -52,11 +64,17 @@ const SortedDisplay = ({navigation, route}) => {
             case 'title':
                 sortType = sortTitle;
                 break;
+            case 'actor':
+                sortType = sortName('actors');
+                break;
+            case 'director':
+                sortType = sortName('director');
+                break;
             case 'genre':
                 sortType = sortGenre;
                 break;
-            case 'actor':
-                sortType = sortActor;
+            case 'format':
+                sortType = sortFormat;
                 break;
             default:
                 sortType = sortTitle;
@@ -81,10 +99,10 @@ const SortedDisplay = ({navigation, route}) => {
                 selectedValue={sortOrder}
             >
                 <Picker.Item label="Title" value="title" />
+                <Picker.Item label="Actor" value="actor" />
+                <Picker.Item label="Director" value="director" />
                 <Picker.Item label="Genre" value="genre" />
                 <Picker.Item label="Format" value="format" />
-                <Picker.Item label="Actor" value="actor" /> //TODO get list of actor last names and sorted
-                <Picker.Item label="Director" value="director" />
             </Picker>
             
             <TextInput
