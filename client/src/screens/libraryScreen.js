@@ -114,7 +114,7 @@ const SortedDisplay = ({navigation, route}) => {
                 sections={sections}
                 renderSectionHeader={({ section: { heading } }) => <StyledSectionHeading>{heading}</StyledSectionHeading>}
                 renderItem={({ item }) =>
-                    <Pressable onPress={() => navigation.navigate('Item Details', {itemDetails: item})}>
+                    <Pressable key={ item.itemID._id } onPress={() => navigation.navigate('Item Details', {itemDetails: item})}>
                         <StyledSectionItem>{item.itemID.title}</StyledSectionItem>
                     </Pressable>}
             />

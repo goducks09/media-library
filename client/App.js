@@ -5,9 +5,8 @@ import { GOOGLE_CLIENT_ID_EXPO, GOOGLE_CLIENT_ID_WEB } from './secrets';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Home, {Add, Library} from './src/navigators';
-import SearchResult from './src/searchResults';
-import { Button, Platform, Text } from 'react-native';
+import Home, {Add, Library, Search} from './src/navigators';
+import { Button, Platform } from 'react-native';
 import { StyledStandardSafeArea, StyledTextInput } from './src/config/globalStyles';
 
 export const UserContext = React.createContext();
@@ -119,7 +118,7 @@ export default function App() {
           <NavigationContainer>
             <Tab.Navigator>
               <Tab.Screen name="Home" component={Home} />
-              <Tab.Screen name="Search" component={SearchResult} />
+              <Tab.Screen name="Search" component={Search} />
               <Tab.Screen name="Add" component={Add} />
               <Tab.Screen name="Library" component={Library} />
             </Tab.Navigator>

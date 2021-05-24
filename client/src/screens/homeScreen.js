@@ -1,13 +1,13 @@
 import React, {useContext} from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledImage, StyledStandardSafeArea } from '../config/globalStyles';
+import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledStandardSafeArea } from '../config/globalStyles';
 import { UserContext } from "../../App";
+import ThumbnailItem from '../components/thumbnailItem';
 
 
 const HomeScreen = ({navigation}) => {
     const { userItems } = useContext(UserContext);
-    console.log('items: ', userItems);
     
     const handleRandomMoviePress = () => {
         //TODO make sure value doesn't duplicate and return same item twice
@@ -15,8 +15,12 @@ const HomeScreen = ({navigation}) => {
         navigation.navigate('Item Details', { itemDetails: userItems[randomIndex] });
     };
     
-    const handleNavigationPress = (e) => {
+    const handleLibraryNavigationPress = (e) => {
         navigation.navigate('Library', { sortBy: e.target.innerText });
+    };
+    
+    const handleItemPress = item => {
+        navigation.navigate('Item Details', { itemDetails: item });
     };
 
     return (
@@ -26,13 +30,9 @@ const HomeScreen = ({navigation}) => {
                     <StyledCenteredView>
                         <StyledRegularText>Recently Added</StyledRegularText>
                         <View style={styles.row}>
-                            {userItems.map(item =>
-                                <Pressable key={item._id} onPress={() => navigation.navigate('Item Details', {itemDetails: item})}>
-                                    <StyledImage
-                                        source={{ uri: item.itemID.imageURL }}
-                                    />
-                                </Pressable>
-                            )}    
+                        {userItems.map(item =>
+                            <ThumbnailItem item={item} key={item._id} onPress={handleItemPress} />
+                        )}    
                         </View>
                     </StyledCenteredView>
                 }
@@ -41,17 +41,17 @@ const HomeScreen = ({navigation}) => {
             <StyledCenteredView>
                 <StyledRegularText>View By</StyledRegularText>
                 <StyledRowView>
-                    <StyledRoundedButton onPress={handleNavigationPress}>
+                    <StyledRoundedButton onPress={handleLibraryNavigationPress}>
                         <StyledButtonText>Title</StyledButtonText>
                     </StyledRoundedButton>
-                    <StyledRoundedButton onPress={handleNavigationPress}>
+                    <StyledRoundedButton onPress={handleLibraryNavigationPress}>
                         <StyledButtonText>Genre</StyledButtonText>
                     </StyledRoundedButton>
                     <StyledRoundedButton>
-                        <StyledButtonText onPress={handleNavigationPress}>Actor</StyledButtonText>
+                        <StyledButtonText onPress={handleLibraryNavigationPress}>Actor</StyledButtonText>
                     </StyledRoundedButton>
                     <StyledRoundedButton>
-                        <StyledButtonText onPress={handleNavigationPress}>Format</StyledButtonText>
+                        <StyledButtonText onPress={handleLibraryNavigationPress}>Format</StyledButtonText>
                     </StyledRoundedButton>
                 </StyledRowView>
             </StyledCenteredView>

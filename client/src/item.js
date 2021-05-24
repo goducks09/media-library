@@ -22,7 +22,7 @@ const reducer = () => {
 const Item = ({route}) => {
     const [movie, setMovie] = useReducer(reducer, initialState);
     const { itemDetails } = route.params;
-    console.log(itemDetails);
+    
     return (
         <StyledCenteredSafeArea>
             <Image

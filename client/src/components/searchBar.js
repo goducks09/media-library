@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyledTextInput } from '../config/globalStyles';
 
-const SearchBar = (props) => {
+const SearchBar = props => {
     const { stateUpdater, value } = props;
     const onChangeText = (text, stateUpdater) => {
         stateUpdater(text);

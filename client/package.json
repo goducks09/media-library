@@ -19,6 +19,7 @@
     "expo-linking": "^2.2.3",
     "expo-random": "~10.0.0",
     "expo-status-bar": "~1.0.3",
+    "fuse.js": "^6.4.6",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "react": "16.13.1",
