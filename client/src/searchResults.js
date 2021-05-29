@@ -7,17 +7,21 @@ import { UserContext } from "../App";
 
 const SearchResult = ({navigation}) => {
     const [searchValue, setSearchValue] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
     const { userItems } = useContext(UserContext);
 
-    // TODO weight title highest, then actor, director, format
     // Fuse fuzzy search setup
     const options = {
-        // Search in 'format', 'actors', 'director', and 'title' to find match
-        keys: ['format', 'itemID.actors.fullName', 'itemID.director.fullName', 'itemID.title']
+        // Search in 'format', 'actors', 'director', and 'title' to find match. Higher weight = higher in search result. Default = 1
+        keys: [
+            'format',
+            { name: 'itemID.actors.fullName', weight: 2.5 },
+            { name: 'itemID.director.fullName', weight: 1.5 },
+            { name: 'itemID.title', weight: 5 }
+        ]
     };
     const fuse = new Fuse(userItems, options);
     const result = fuse.search(searchValue);
+    console.log(result);
 
     const handleItemPress = item => {
         navigation.navigate('Item Details', { itemDetails: item });

@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledStandardSafeArea } from '../config/globalStyles';
+import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledRoundedButtonWide, StyledStandardSafeArea } from '../config/globalStyles';
 import { UserContext } from "../../App";
 import ThumbnailItem from '../components/thumbnailItem';
 
@@ -30,7 +30,7 @@ const HomeScreen = ({navigation}) => {
                     <StyledCenteredView>
                         <StyledRegularText>Recently Added</StyledRegularText>
                         <View style={styles.row}>
-                        {userItems.map(item =>
+                        {userItems.slice(0,3).map(item =>
                             <ThumbnailItem item={item} key={item._id} onPress={handleItemPress} />
                         )}    
                         </View>
@@ -54,11 +54,11 @@ const HomeScreen = ({navigation}) => {
                         <StyledButtonText onPress={handleLibraryNavigationPress}>Format</StyledButtonText>
                     </StyledRoundedButton>
                 </StyledRowView>
+                <StyledRoundedButtonWide onPress={handleRandomMoviePress}>
+                    <StyledButtonText>Pick random item</StyledButtonText>
+                </StyledRoundedButtonWide>
             </StyledCenteredView>
 
-            <StyledRoundedButton onPress={handleRandomMoviePress}>
-                <StyledButtonText>Pick random item</StyledButtonText>
-            </StyledRoundedButton>
         </StyledStandardSafeArea>
     );
 }

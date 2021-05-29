@@ -31,18 +31,21 @@ const Item = ({route}) => {
             />
             <View>
                 <StyledRegularText>Starring:</StyledRegularText>
-                {/* only get first 5 actors to show */}
+            {/* only get first 5 actors to show */}
                 {itemDetails.itemID.actors.slice(0,5).map((actor, index) => 
                     <StyledSectionItem key={index}>{actor.fullName}</StyledSectionItem>
                 )}
-
-                {/* If an item is a tv show, it won't have a run time, so don't display */}
-                {itemDetails.itemID.runTime && <StyledRegularText>Runtime: <StyledSmallText>{itemDetails.itemID.runTime} min</StyledSmallText></StyledRegularText>}
-                <StyledRegularText>Genre:
-                        {itemDetails.itemID.genre.map((genre, index) =>
-                            <StyledSmallText key={index}>{(index ? ', ' : ' ') + genre}</StyledSmallText>
+            {/* If an item is a tv show, it won't have a director, so don't display */}
+                {
+                    itemDetails.itemID.director &&
+                    <StyledRegularText>Director:
+                {itemDetails.itemID.director.map((director, index) =>
+                        <StyledSmallText key={index}>{(index ? ', ' : ' ') + director.fullName}</StyledSmallText>
                     )}
-                </StyledRegularText>
+                    </StyledRegularText>
+                }
+            {/* If an item is a tv show, it won't have a run time, so don't display */}
+                {itemDetails.itemID.runTime && <StyledRegularText>Runtime: <StyledSmallText>{itemDetails.itemID.runTime} min</StyledSmallText></StyledRegularText>}
                 <StyledRegularText>Format:
                     {itemDetails.format.map((format, index) =>
                         <StyledSmallText key={index}> {format}</StyledSmallText>

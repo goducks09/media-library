@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { TextInput, SectionList, Pressable } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledStandardSafeArea } from "../config/globalStyles";
+import { StyledPicker, StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledStandardSafeArea } from "../config/globalStyles";
 import { UserContext } from "../../App";
 
 const SortedDisplay = ({navigation, route}) => {
@@ -18,7 +18,13 @@ const SortedDisplay = ({navigation, route}) => {
 
     // create object of all movies where the key = first letter of the title and the value = array of all movies starting with the key
     const sortTitle = userItems.reduce((obj, item) => {
-        let firstLetter = item.itemID.title[0].toUpperCase();
+        let { title } = item.itemID;
+        const articles = ['A', 'An', 'The'];
+        const words = title.split(' ');
+        if (words.length > 1 && articles.includes(words[0])) {
+            title = words[1];
+        }
+        let firstLetter = title[0].toUpperCase();
         const ascii = firstLetter.charCodeAt();
         if (ascii >= 48 && ascii <= 57) {
             firstLetter = '#';
@@ -57,7 +63,7 @@ const SortedDisplay = ({navigation, route}) => {
     
 
     // create sections by sort type for SectionList
-    const sectionedList = (sortValue) => {
+    const sectionedList = sortValue => {
         let value = sortValue.toLowerCase();
         let sortType;
         switch (value) {
@@ -80,18 +86,31 @@ const SortedDisplay = ({navigation, route}) => {
                 sortType = sortTitle;
         }
 
-        const newSections = Object.keys(sortType).sort().map(item => ({
-            heading: item,
-            data: sortType[item]
-        }));
+        const newSections = Object.keys(sortType).sort().map(item => {
+            const sortItems = sortType[item].sort((a, b) => {
+                if (a.itemID.title < b.itemID.title) {
+                    return -1;
+                }
+                if (a.itemID.title > b.itemID.title) {
+                    return 1;
+                }
+
+                // names must be equal
+                return 0;
+            });
+
+            return {
+                heading: item,
+                data: sortItems
+            }
+        });
 
         setSections(newSections);
     }
 
     return (
         <StyledStandardSafeArea>
-            <Picker
-                style={{ height: 50, width: 100 }}
+            <StyledPicker
                 onValueChange={(itemValue) => {
                     sectionedList(itemValue);
                     setSortOrder(itemValue);
@@ -103,12 +122,8 @@ const SortedDisplay = ({navigation, route}) => {
                 <Picker.Item label="Director" value="director" />
                 <Picker.Item label="Genre" value="genre" />
                 <Picker.Item label="Format" value="format" />
-            </Picker>
-            
-            <TextInput
-                onChangeText={() => console.log('text => onChangeText(text)')}
-                value={console.log('value')}
-            />
+            </StyledPicker>
+
             <SectionList
                 contentContainerStyle={StyledSectionList}
                 sections={sections}
