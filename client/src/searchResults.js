@@ -11,9 +11,8 @@ const SearchResult = ({navigation}) => {
 
     // Fuse fuzzy search setup
     const options = {
-        // Search in 'format', 'actors', 'director', and 'title' to find match. Higher weight = higher in search result. Default = 1
+        // Search in 'actors', 'director', and 'title' to find match. Higher weight = higher in search result. Default = 1
         keys: [
-            'format',
             { name: 'itemID.actors.fullName', weight: 2.5 },
             { name: 'itemID.director.fullName', weight: 1.5 },
             { name: 'itemID.title', weight: 5 }

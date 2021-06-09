@@ -5,7 +5,6 @@ import { StyledPicker, StyledSectionHeading, StyledSectionItem, StyledSectionLis
 import { UserContext } from "../../App";
 
 const SortedDisplay = ({navigation, route}) => {
-    //TODO when sort option is selected, send req to server for new sorted list
     const {userItems} = useContext(UserContext);
 
     const { sortBy } = route.params || {sortBy: 'title'};
@@ -127,9 +126,10 @@ const SortedDisplay = ({navigation, route}) => {
             <SectionList
                 contentContainerStyle={StyledSectionList}
                 sections={sections}
+                keyExtractor={(item, index) => item.itemID._id}
                 renderSectionHeader={({ section: { heading } }) => <StyledSectionHeading>{heading}</StyledSectionHeading>}
                 renderItem={({ item }) =>
-                    <Pressable key={ item.itemID._id } onPress={() => navigation.navigate('Item Details', {itemDetails: item})}>
+                    <Pressable onPress={() => navigation.navigate('Item Details', {itemDetails: item})}>
                         <StyledSectionItem>{item.itemID.title}</StyledSectionItem>
                     </Pressable>}
             />

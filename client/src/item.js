@@ -37,7 +37,7 @@ const Item = ({route}) => {
                 )}
             {/* If an item is a tv show, it won't have a director, so don't display */}
                 {
-                    itemDetails.itemID.director &&
+                    itemDetails.itemID.director[0] &&
                     <StyledRegularText>Director:
                 {itemDetails.itemID.director.map((director, index) =>
                         <StyledSmallText key={index}>{(index ? ', ' : ' ') + director.fullName}</StyledSmallText>

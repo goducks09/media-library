@@ -90,8 +90,12 @@ export const StyledPressable = styled.Pressable`
 `;
 
 export const StyledTextInput = styled.TextInput`
-    borderColor: #151515;
+    border: 1px solid #00C6CF;
+    borderRadius: 28px;
+    box-shadow: ${props => (props.focus === true ? '0 0 10px #00C6CF' : 'none')};
+    outline-style: none;
     color: #00C6CF;
+    padding: 5px;
 `;
 
 export const StyledImage = styled.Image`
@@ -111,17 +115,9 @@ export const StyledPicker = styled.Picker`
     border: 1px solid #00C6CF;
     borderRadius: 28px;
     color: #00C6CF;
-    elevation: 5;
     fontSize: 20px;
-    height: 40;
-    minHeight: 40;
-    paddingLeft: 15;
-    shadowColor: #FFFF00,
-    shadowOffset: {
-        width: 5,
-        height: 10,
-    };
-    shadowOpacity: 0.5;
-    shadowRadius: 5;
-    width: 250;
+    height: 40px;
+    minHeight: 40px;
+    paddingLeft: 15px;
+    width: 250px;
 `;

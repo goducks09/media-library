@@ -3,11 +3,13 @@ import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
 import { GOOGLE_CLIENT_ID_EXPO, GOOGLE_CLIENT_ID_WEB } from './secrets';
 import { StatusBar } from 'expo-status-bar';
+import { RootSiblingParent } from 'react-native-root-siblings';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home, {Add, Library, Search} from './src/navigators';
 import { Button, Platform } from 'react-native';
 import { StyledStandardSafeArea, StyledTextInput } from './src/config/globalStyles';
+import SearchBar from "./src/components/searchBar";
 
 export const UserContext = React.createContext();
 const Tab = createBottomTabNavigator();
@@ -112,7 +114,7 @@ export default function App() {
   };
 
   return (
-    <>
+    <RootSiblingParent>
       {userItems ? (
         <UserContext.Provider value={contextValue}>
           <NavigationContainer>
@@ -142,6 +144,6 @@ export default function App() {
         </StyledStandardSafeArea>
         )
       }
-    </>
+    </RootSiblingParent>
   );
 };
