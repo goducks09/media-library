@@ -15,14 +15,21 @@ const SortedDisplay = ({navigation, route}) => {
         sectionedList(sortBy);
     }, [userItems]);
 
+
+    // function to ignore articles when sorting strings
+    const ignoreArticles = string => {
+        const articles = ['A', 'An', 'The'];
+        const words = string.split(' ');
+        if (words.length > 1 && articles.includes(words[0])) {
+            string = words[1];
+        }
+        return string;
+    }
     // create object of all movies where the key = first letter of the title and the value = array of all movies starting with the key
     const sortTitle = userItems.reduce((obj, item) => {
         let { title } = item.itemID;
-        const articles = ['A', 'An', 'The'];
-        const words = title.split(' ');
-        if (words.length > 1 && articles.includes(words[0])) {
-            title = words[1];
-        }
+        title = ignoreArticles(title);
+        
         let firstLetter = title[0].toUpperCase();
         const ascii = firstLetter.charCodeAt();
         if (ascii >= 48 && ascii <= 57) {
@@ -87,10 +94,12 @@ const SortedDisplay = ({navigation, route}) => {
 
         const newSections = Object.keys(sortType).sort().map(item => {
             const sortItems = sortType[item].sort((a, b) => {
-                if (a.itemID.title < b.itemID.title) {
+                const titleA = ignoreArticles(a.itemID.title);
+                const titleB = ignoreArticles(b.itemID.title);
+                if (titleA < titleB) {
                     return -1;
                 }
-                if (a.itemID.title > b.itemID.title) {
+                if (titleA > titleB) {
                     return 1;
                 }
 

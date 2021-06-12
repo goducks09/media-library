@@ -1,11 +1,19 @@
 const fetch = require('node-fetch');
 
-// TODO MAKE SURE TO USE API KEY AS A HEADER AND NOT IN THE URL
 export const tmdbMultiSearch = async (req, res) => {
     try {
-        let response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${process.env.TMDB_API_KEY}&language=en-US&query=${req.body.searchText}&page=1&adult=false`);
+        let response = await fetch(
+            `https://api.themoviedb.org/3/search/multi?&language=en-US&query=${req.body.searchText}&page=1&adult=false`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${process.env.TMDB_API_TOKEN}`,
+                    'Content-Type': 'application/json;charset=utf-8'
+                }
+            }
+        );
         let json = await response.json();
         let resultList = [];
+        // standardize the results from TMDB due to differences in TV shows and movies
         json.results.forEach(result => {
                 if (result.media_type !== 'person') {
                     let { first_air_date, id, media_type, name, poster_path, release_date, title } = result;
@@ -34,7 +42,15 @@ export const tmdbMultiSearch = async (req, res) => {
 // Query TMDB and manipulate return to only pass through pertinent data for saving to Mongo
 export const tmdbSingleSearch = async (req, res) => {
     try {
-        let response = await fetch(`https://api.themoviedb.org/3/${req.params.mediaType}/${req.params.itemID}?api_key=${process.env.TMDB_API_KEY}&language=en-US&adult=false&append_to_response=credits`);
+        let response = await fetch(
+            `https://api.themoviedb.org/3/${req.params.mediaType}/${req.params.itemID}?&language=en-US&adult=false&append_to_response=credits`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${process.env.TMDB_API_TOKEN}`,
+                    'Content-Type': 'application/json;charset=utf-8'
+                }
+            }
+        );
         let item = await response.json();
         item = buildItemModel(item, req.params.mediaType);
         res.json(item);

@@ -45,7 +45,7 @@ const AddItem = () => {
                 })
             });
             let json = await response.json();
-            setSearchResults(json);;
+            setSearchResults(json);
         } catch (error) {
             console.error(error);
         }

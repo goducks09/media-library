@@ -1,26 +1,8 @@
-import React, { useReducer } from 'react';
-import { Image, Text, View } from 'react-native';
+import React from 'react';
+import { Image, View } from 'react-native';
 import { StyledRegularText, StyledSmallText, StyledCenteredSafeArea, StyledSectionItem } from './config/globalStyles';
 
-const initialState = {
-    actors: [], //TODO needs to be an array of obj {firstName, lastName, fullName}
-    dateAdded: '',
-    director: [],
-    format: [], //TODO needs to take input and comma separate (e.g. "4K Blu-ray Physical" => ["4K", "Blu-ray", "Physical"])
-    genre: [],
-    imageURL: '',
-    releaseDate: 0,
-    runTime: 0,
-    title: '',
-    userTag: [],
-}
-
-const reducer = () => {
-    console.log('reducer');
-}
-
 const Item = ({route}) => {
-    const [movie, setMovie] = useReducer(reducer, initialState);
     const { itemDetails } = route.params;
     
     return (
