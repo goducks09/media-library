@@ -84,7 +84,7 @@ export default function App() {
 
   const getUserInfoAsync = async id => {
     try {
-      let response = await fetch(`http://localhost:3000/login`, {
+      let response = await fetch(`https://floating-dawn-94898.herokuapp.com/login`, {
         method: 'POST',
         headers: {
             Accept: 'application/json',

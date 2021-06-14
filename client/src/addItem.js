@@ -30,11 +30,13 @@ const AddItem = () => {
     useEffect(() => {
         searchValue && debouncedGetDetails(searchValue);
     }, [searchValue]);
+
+    const serverURL = 'https://floating-dawn-94898.herokuapp.com';
     
     // Request to apiRoutes to find results based on user search
     const getItemsFromTmdbAsync = async (text) => {
         try {
-            let response = await fetch(`http://localhost:3000/search`, {
+            let response = await fetch(`${serverURL}/search`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -54,7 +56,7 @@ const AddItem = () => {
     // Request to apiRoutes to get detail info on specific item
     const fetchSingleItemFromTmdb = async ({ id, media_type }) => {
         try {
-            let response = await fetch(`http://localhost:3000/search/${media_type}/${id}`);
+            let response = await fetch(`${serverURL}/search/${media_type}/${id}`);
             let json = await response.json();
             return json;
         } catch (error) {
@@ -108,7 +110,7 @@ const AddItem = () => {
     const handleSubmit = async () => {
         try {
             const item = await fetchSingleItemFromTmdb(itemToAdd);
-            let response = await fetch(`http://localhost:3000/items`, {
+            let response = await fetch(`${serverURL}/items`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

@@ -20,7 +20,6 @@ const SearchResult = ({navigation}) => {
     };
     const fuse = new Fuse(userItems, options);
     const result = fuse.search(searchValue);
-    console.log(result);
 
     const handleItemPress = item => {
         navigation.navigate('Item Details', { itemDetails: item });
