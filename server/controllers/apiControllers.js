@@ -22,7 +22,7 @@ export const tmdbMultiSearch = async (req, res) => {
                     if (title.length > 20) title = title.slice(0, 17).concat('...');
                     let year;
                     release_date ? year = release_date.substring(0, 4) : year = '';
-                    poster_path === null ? poster_path = 'https://via.placeholder.com/92x138.png?text=No+Image+Available' : poster_path = `https://image.tmdb.org/t/p/w154${poster_path}`;
+                    poster_path === null ? poster_path = 'https://via.placeholder.com/92x138.png?text=No+Image+Available' : poster_path = `https://image.tmdb.org/t/p/w300${poster_path}`;
                     const resultItem = {
                         id,
                         media_type,
@@ -78,7 +78,7 @@ const buildItemModel = (item, mediaType) => {
 
     const genre = item.genres.map(genre => genre.name);
     let imageURL = '';
-    item.poster_path === 'null' ? imageURL = 'https://via.placeholder.com/92x138.png?text=No+Image+Available' : imageURL = `https://image.tmdb.org/t/p/w154${item.poster_path}`;
+    item.poster_path === 'null' ? imageURL = 'https://via.placeholder.com/92x138.png?text=No+Image+Available' : imageURL = `https://image.tmdb.org/t/p/w300${item.poster_path}`;
 
     const releaseDate = item.release_date.substring(0, 4);
     const runTime = item.runtime;
