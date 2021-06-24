@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home, {Add, Library, Search} from './src/navigators';
 import { Button, Platform } from 'react-native';
-import { StyledStandardSafeArea, StyledTextInput } from './src/config/globalStyles';
+import { StyledStandardSafeArea, StyledTextInput } from './src/config/globalStylesStyled';
 import SearchBar from "./src/components/searchBar";
 
 export const UserContext = React.createContext();
@@ -41,7 +41,6 @@ export default function App() {
   useEffect(() => {
     if (response?.type === 'success') {
       const { code } = response.params;
-      console.log(code);
     }
   }, [response]);
 

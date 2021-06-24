@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, View } from 'react-native';
-import { StyledRegularText, StyledSmallText, StyledCenteredSafeArea, StyledSectionItem } from './config/globalStyles';
+import { StyledRegularText, StyledSmallText, StyledCenteredSafeArea, StyledSectionItem } from './config/globalStylesStyled';
 
 const Item = ({route}) => {
     const { itemDetails } = route.params;
@@ -8,8 +8,8 @@ const Item = ({route}) => {
     return (
         <StyledCenteredSafeArea>
             <Image
-                source={itemDetails.itemID.imageURL}
-                style={{ height: 268, width: 182, resizeMode: 'contain' }}
+                source={{ uri: `${itemDetails.itemID.imageURL}` }}
+                style={{ height: 175, width: 125, resizeMode: 'contain' }}
             />
             <View>
                 <StyledRegularText>Starring:</StyledRegularText>

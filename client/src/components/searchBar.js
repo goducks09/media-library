@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { StyledTextInput } from '../config/globalStyles';
+import { StyledTextInput } from '../config/globalStylesStyled';
 
 const SearchBar = (props, ref) => {
     const searchBar = useRef(null);
@@ -24,6 +24,7 @@ const SearchBar = (props, ref) => {
             onChangeText={text => onChangeText(text, stateUpdater)}
             onFocus={() => setFocus(true)}
             placeholder={'Search....'}
+            placeholderTextColor={'#00C6CF'}
             ref={searchBar}
         />
     );

@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { TextInput, SectionList, Pressable } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { StyledPicker, StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledStandardSafeArea } from "../config/globalStyles";
+import { StyledPicker, StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledStandardSafeArea } from "../config/globalStylesStyled";
 import { UserContext } from "../../App";
 
 const SortedDisplay = ({navigation, route}) => {
@@ -29,6 +29,7 @@ const SortedDisplay = ({navigation, route}) => {
     const sortTitle = userItems.reduce((obj, item) => {
         let { title } = item.itemID;
         title = ignoreArticles(title);
+        if (title.length > 25) item.itemID.title = title.slice(0, 25).concat('...');
         
         let firstLetter = title[0].toUpperCase();
         const ascii = firstLetter.charCodeAt();
@@ -118,19 +119,21 @@ const SortedDisplay = ({navigation, route}) => {
 
     return (
         <StyledStandardSafeArea>
-            <StyledPicker
+            <Picker
+                style={{width: '50%', marginLeft: 'auto', marginRight: 'auto'}}
                 onValueChange={(itemValue) => {
                     sectionedList(itemValue);
                     setSortOrder(itemValue);
                 }}
                 selectedValue={sortOrder}
+                dropdownIconColor='#00C6CF'
             >
                 <Picker.Item label="Title" value="title" />
                 <Picker.Item label="Actor" value="actor" />
                 <Picker.Item label="Director" value="director" />
                 <Picker.Item label="Genre" value="genre" />
                 <Picker.Item label="Format" value="format" />
-            </StyledPicker>
+            </Picker>
 
             <SectionList
                 contentContainerStyle={StyledSectionList}

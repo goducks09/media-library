@@ -1,16 +1,16 @@
 import React from 'react';
 import { Pressable } from "react-native";
-import { StyledImage } from "../config/globalStyles";
+import { StyledImage, StyledPressableImage } from "../config/globalStylesStyled";
 
 const ThumbnailItem = props => {
     const { item, onPress } = props;
 
     return (
-        <Pressable onPress={() => onPress(item)}>
+        <StyledPressableImage onPress={() => onPress(item)}>
             <StyledImage
                 source={{ uri: item.itemID.imageURL }}
             />
-        </Pressable>
+        </StyledPressableImage>
     );
 };
 

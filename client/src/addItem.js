@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { debounce, first } from 'lodash';
 import { Picker } from '@react-native-picker/picker';
-import { StyledButtonText, StyledCenteredSafeArea, StyledImage, StyledModalView, StyledPicker, StyledPressable, StyledRoundedButtonWide, StyledRowView, StyledSmallText, StyledTextInput } from './config/globalStyles';
+import { StyledButtonText, StyledCenteredSafeArea, StyledImage, StyledModalView, StyledPicker, StyledPressable, StyledRoundedButtonWide, StyledRowView, StyledSmallText, StyledTextInput } from './config/globalStylesStyled';
 import { FlatList, Modal } from 'react-native';
 import SearchBar from './components/searchBar';
 import { UserContext } from "../App";

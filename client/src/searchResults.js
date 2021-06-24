@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import Fuse from 'fuse.js';
 import SearchBar from './components/searchBar';
 import ThumbnailItem from "./components/thumbnailItem";
-import { StyledRowView, StyledStandardSafeArea } from './config/globalStyles';
+import { StyledRowView, StyledStandardSafeArea } from './config/globalStylesStyled';
 import { UserContext } from "../App";
 
 const SearchResult = ({navigation}) => {

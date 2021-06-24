@@ -1,7 +1,6 @@
 import React, {useContext} from 'react';
-import { StyleSheet, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledRoundedButtonWide, StyledStandardSafeArea } from '../config/globalStyles';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledRoundedButtonWide, StyledStandardSafeArea } from '../config/globalStylesStyled';
 import { UserContext } from "../../App";
 import ThumbnailItem from '../components/thumbnailItem';
 
@@ -15,8 +14,8 @@ const HomeScreen = ({navigation}) => {
         navigation.navigate('Item Details', { itemDetails: userItems[randomIndex] });
     };
     
-    const handleLibraryNavigationPress = (e) => {
-        navigation.navigate('Library', { sortBy: e.target.innerText });
+    const handleLibraryNavigationPress = type => {
+        navigation.navigate('Library', { sortBy: type });
     };
     
     const handleItemPress = item => {
@@ -24,41 +23,40 @@ const HomeScreen = ({navigation}) => {
     };
 
     return (
-        <StyledStandardSafeArea>
-            <ScrollView contentContainerStyle={styles.container}>
+        <StyledStandardSafeArea style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scroll}>
                 {userItems &&
                     <StyledCenteredView>
-                        <StyledRegularText>Recently Added</StyledRegularText>
+                        <StyledRegularText textAlign={'center'}>Recently Added</StyledRegularText>
                         <View style={styles.row}>
-                        {userItems.slice(0,3).map(item =>
+                        {userItems.slice(-3).map(item =>
                             <ThumbnailItem item={item} key={item._id} onPress={handleItemPress} />
                         )}    
                         </View>
                     </StyledCenteredView>
                 }
+
+                <StyledCenteredView>
+                    <StyledRegularText textAlign={'center'}>View By</StyledRegularText>
+                    <StyledRowView>
+                        <StyledRoundedButton onPress={() => handleLibraryNavigationPress('title')}>
+                            <StyledButtonText>Title</StyledButtonText>
+                        </StyledRoundedButton>
+                        <StyledRoundedButton onPress={() => handleLibraryNavigationPress('genre')}>
+                            <StyledButtonText>Genre</StyledButtonText>
+                        </StyledRoundedButton>
+                        <StyledRoundedButton onPress={() => handleLibraryNavigationPress('actor')}>
+                            <StyledButtonText>Actor</StyledButtonText>
+                        </StyledRoundedButton>
+                        <StyledRoundedButton onPress={() => handleLibraryNavigationPress('format')}>
+                            <StyledButtonText>Format</StyledButtonText>
+                        </StyledRoundedButton>
+                        <StyledRoundedButtonWide onPress={handleRandomMoviePress}>
+                            <StyledButtonText>Pick random item</StyledButtonText>
+                        </StyledRoundedButtonWide>
+                    </StyledRowView>
+                </StyledCenteredView>
             </ScrollView>
-
-            <StyledCenteredView>
-                <StyledRegularText>View By</StyledRegularText>
-                <StyledRowView>
-                    <StyledRoundedButton onPress={handleLibraryNavigationPress}>
-                        <StyledButtonText>Title</StyledButtonText>
-                    </StyledRoundedButton>
-                    <StyledRoundedButton onPress={handleLibraryNavigationPress}>
-                        <StyledButtonText>Genre</StyledButtonText>
-                    </StyledRoundedButton>
-                    <StyledRoundedButton>
-                        <StyledButtonText onPress={handleLibraryNavigationPress}>Actor</StyledButtonText>
-                    </StyledRoundedButton>
-                    <StyledRoundedButton>
-                        <StyledButtonText onPress={handleLibraryNavigationPress}>Format</StyledButtonText>
-                    </StyledRoundedButton>
-                </StyledRowView>
-                <StyledRoundedButtonWide onPress={handleRandomMoviePress}>
-                    <StyledButtonText>Pick random item</StyledButtonText>
-                </StyledRoundedButtonWide>
-            </StyledCenteredView>
-
         </StyledStandardSafeArea>
     );
 }
@@ -74,6 +72,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         flexWrap: 'wrap'
+    },
+    scroll: {
+        justifyContent: 'space-around'
     }
 });
 
