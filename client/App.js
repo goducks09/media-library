@@ -20,7 +20,7 @@ const useProxy = Platform.select({ web: false, default: true });
 export default function App() {
   const [userName, setUserName] = useState(null);
   const [userID, setUserID] = useState(null);
-  const [userItems, setUserItems] = useState(null);
+  const [userItems, setUserItems] = useState([]);
   
   const discovery = useAutoDiscovery('https://dev-14030156.okta.com/oauth2/default');
   const [request, response, promptAsync] = useAuthRequest(
@@ -83,7 +83,8 @@ export default function App() {
 
   const getUserInfoAsync = async id => {
     try {
-      let response = await fetch(`https://floating-dawn-94898.herokuapp.com/login`, {
+      // let response = await fetch(`https://floating-dawn-94898.herokuapp.com/login`, {
+      let response = await fetch(`http://localhost:3000/login`, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -109,12 +110,25 @@ export default function App() {
     userID,
     userItems,
     userName,
-    updateItemList: (items) => setUserItems(items)
+    updateItemList: (item, update) => {
+      // if the item is in userItems, find and update the item
+      if (update) {
+        // create shallow copy of array
+        let items = [...userItems];
+        const index = items.findIndex(old => old._id === item._id);
+        // replace original item with updated item
+        items[index] = item;
+        setUserItems(items);
+      } else {
+      // else add the new item
+        setUserItems([...userItems, item]);
+      }
+    }
   };
 
   return (
     <RootSiblingParent>
-      {userItems ? (
+      {userID ? (
         <UserContext.Provider value={contextValue}>
           <NavigationContainer>
             <Tab.Navigator>

@@ -31,7 +31,7 @@ const Home = () => {
             screenOptions={headerOptions}
         >
             <HomeStack.Screen component={HomeScreen} name="Home View" options={{ title: 'Media Library' }} />
-            <HomeStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.itemID.title })} />
+            <HomeStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.title })} />
             <HomeStack.Screen component={SortedDisplay} name="Library" />
         </HomeStack.Navigator>
     );
@@ -44,7 +44,7 @@ export const Library = () => {
             screenOptions={headerOptions}
         >
             <LibraryStack.Screen component={SortedDisplay} name="Library" />
-            <LibraryStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.itemID.title })} />
+            <LibraryStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.title })} />
         </LibraryStack.Navigator>
     );
 };
@@ -56,7 +56,7 @@ export const Add = () => {
             screenOptions={headerOptions}
         >
             <AddItemStack.Screen component={AddItem} name="Add" />
-            <AddItemStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.itemID.title })} />
+            <AddItemStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.title })} />
         </AddItemStack.Navigator>
     );
 };
@@ -68,7 +68,7 @@ export const Search = () => {
             screenOptions={headerOptions}
         >
             <SearchStack.Screen component={SearchResult} name="Search" />
-            <SearchStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.itemDetails.itemID.title })} />
+            <SearchStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.title })} />
         </SearchStack.Navigator>
     );
 };

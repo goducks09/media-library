@@ -22,7 +22,7 @@ const SearchResult = ({navigation}) => {
     const result = fuse.search(searchValue);
 
     const handleItemPress = item => {
-        navigation.navigate('Item Details', { itemDetails: item });
+        navigation.navigate('Item Details', { itemID: item.itemID._id, title: item.itemID.title });
     };
 
     return (

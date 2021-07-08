@@ -11,7 +11,8 @@ const HomeScreen = ({navigation}) => {
     const handleRandomMoviePress = () => {
         //TODO make sure value doesn't duplicate and return same item twice
         const randomIndex = Math.floor(Math.random() * Math.floor(userItems.length));
-        navigation.navigate('Item Details', { itemDetails: userItems[randomIndex] });
+        const item = userItems[randomIndex];
+        navigation.navigate('Item Details', { itemID: item.itemID._id, title: item.itemID.title });
     };
     
     const handleLibraryNavigationPress = type => {
@@ -19,13 +20,13 @@ const HomeScreen = ({navigation}) => {
     };
     
     const handleItemPress = item => {
-        navigation.navigate('Item Details', { itemDetails: item });
+        navigation.navigate('Item Details', { itemID: item.itemID._id, title: item.itemID.title });
     };
 
     return (
         <StyledStandardSafeArea style={styles.container}>
             <ScrollView contentContainerStyle={styles.scroll}>
-                {userItems &&
+                {userItems[0] &&
                     <StyledCenteredView>
                         <StyledRegularText textAlign={'center'}>Recently Added</StyledRegularText>
                         <View style={styles.row}>
@@ -48,8 +49,8 @@ const HomeScreen = ({navigation}) => {
                         <StyledRoundedButton onPress={() => handleLibraryNavigationPress('actor')}>
                             <StyledButtonText>Actor</StyledButtonText>
                         </StyledRoundedButton>
-                        <StyledRoundedButton onPress={() => handleLibraryNavigationPress('format')}>
-                            <StyledButtonText>Format</StyledButtonText>
+                        <StyledRoundedButton onPress={() => handleLibraryNavigationPress('pq')}>
+                            <StyledButtonText>PQ</StyledButtonText>
                         </StyledRoundedButton>
                         <StyledRoundedButtonWide onPress={handleRandomMoviePress}>
                             <StyledButtonText>Pick random item</StyledButtonText>

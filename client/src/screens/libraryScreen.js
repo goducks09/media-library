@@ -29,7 +29,7 @@ const SortedDisplay = ({navigation, route}) => {
     const sortTitle = userItems.reduce((obj, item) => {
         let { title } = item.itemID;
         title = ignoreArticles(title);
-        if (title.length > 25) item.itemID.title = title.slice(0, 25).concat('...');
+        if (title.length > 30) item.itemID.title = title.slice(0, 30).concat('...');
         
         let firstLetter = title[0].toUpperCase();
         const ascii = firstLetter.charCodeAt();
@@ -60,12 +60,12 @@ const SortedDisplay = ({navigation, route}) => {
         return obj;
     }, {});
     
-    // create object of all movies where key = format and value = array of all movies in that format.
-    const sortFormat = userItems.reduce((obj, item) => {
-        item.format.forEach(format => {
-            obj[format] = [...(obj[format] || []), item];
-        });
-        return obj;
+    // create object of all movies where key = picture quality and value = array of all movies in that quality.
+    const sortPictureQuality = userItems.reduce((obj, item) => {
+        return {
+            ...obj,
+            [item.pictureQuality]: [...(obj[item.pictureQuality] || []), item]
+        }
     }, {});
     
 
@@ -86,8 +86,8 @@ const SortedDisplay = ({navigation, route}) => {
             case 'genre':
                 sortType = sortGenre;
                 break;
-            case 'format':
-                sortType = sortFormat;
+            case 'pq':
+                sortType = sortPictureQuality;
                 break;
             default:
                 sortType = sortTitle;
@@ -132,7 +132,7 @@ const SortedDisplay = ({navigation, route}) => {
                 <Picker.Item label="Actor" value="actor" />
                 <Picker.Item label="Director" value="director" />
                 <Picker.Item label="Genre" value="genre" />
-                <Picker.Item label="Format" value="format" />
+                <Picker.Item label="PQ" value="pq" />
             </Picker>
 
             <SectionList
@@ -141,7 +141,7 @@ const SortedDisplay = ({navigation, route}) => {
                 keyExtractor={(item, index) => item.itemID._id}
                 renderSectionHeader={({ section: { heading } }) => <StyledSectionHeading>{heading}</StyledSectionHeading>}
                 renderItem={({ item }) =>
-                    <Pressable onPress={() => navigation.navigate('Item Details', {itemDetails: item})}>
+                    <Pressable onPress={() => navigation.navigate('Item Details', {itemID: item.itemID._id, title: item.itemID.title})}>
                         <StyledSectionItem>{item.itemID.title}</StyledSectionItem>
                     </Pressable>}
             />

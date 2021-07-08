@@ -20,6 +20,7 @@ export const StyledCenteredView = styled.View`
 `;
 
 export const StyledRowView = styled.View`
+    alignItems: center;
     flexDirection: row;
     flexWrap: wrap;
     justifyContent: space-around;
@@ -36,21 +37,21 @@ export const StyledModalView = styled.View`
 
 export const StyledRegularText = styled.Text`
     color: ${props => props.textColor || '#00C6CF'};
-    fontSize: 32px;
+    fontSize: 24px;
     textAlign: ${props => props.textAlign || 'auto'};
 `;
 
 export const StyledSmallText = styled(StyledRegularText)`
     flexShrink: 1;
-    fontSize: 20px;
+    fontSize: 18px;
 `;
 
 export const StyledPageHeader = styled(StyledRegularText)`
-    fontSize: 48px;
+    fontSize: 32px;
 `;
 
 export const StyledButtonText = styled(StyledRegularText)`
-    fontSize: 28px;
+    fontSize: 24px;
 `;
 
 export const StyledSectionList = {
@@ -63,7 +64,7 @@ export const StyledSectionHeading = styled(StyledRegularText)`
 `;
 
 export const StyledSectionItem = styled(StyledRegularText)`
-    fontSize: 20px;
+    fontSize: 18px;
     marginLeft: 10px;
     paddingLeft: 10px;
 `;
@@ -75,8 +76,8 @@ export const StyledRoundedButton = styled.TouchableOpacity`
     borderRadius: 28px;
     borderWidth: 2px;
     margin: 5px auto;
-    padding: 10px 35px;
-    width: 175px;
+    padding: 8px 25px;
+    width: 155px;
 `;
 
 export const StyledRoundedButtonWide = styled(StyledRoundedButton)`
@@ -127,7 +128,7 @@ export const StyledPicker = styled.Picker`
     borderStyle: solid;
     borderWidth: 1px;
     color: #00C6CF;
-    fontSize: 20px;
+    fontSize: 18px;
     height: 40px;
     minHeight: 40px;
     paddingLeft: 15px;
