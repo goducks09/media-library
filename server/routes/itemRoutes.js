@@ -1,4 +1,4 @@
-import { addNewItem, getAllUserItems, getSingleUserItem } from "../controllers/itemControllers";
+import { addNewItem, deleteUserItem, editUserItem, getAllUserItems, getSingleUserItem } from "../controllers/itemControllers";
 
 const itemRoutes = app => {
     app.route('/items')
@@ -6,7 +6,9 @@ const itemRoutes = app => {
         .post(addNewItem);
     
     app.route('/items/:_id')
-        .get(getSingleUserItem);
+        .get(getSingleUserItem)
+        .put(editUserItem)
+        .delete(deleteUserItem);
 };
 
 export default itemRoutes;

@@ -20,15 +20,15 @@ export const tmdbMultiSearch = async (req, res) => {
                     if (!title) title = name;
                     if (!release_date) release_date = first_air_date;
                     if (title.length > 20) title = title.slice(0, 17).concat('...');
-                    let year;
-                    release_date ? year = release_date.substring(0, 4) : year = '';
+                    let releaseDate;
+                    release_date ? releaseDate = release_date.substring(0, 4) : releaseDate = '';
                     poster_path === null ? poster_path = 'https://via.placeholder.com/92x138.png?text=No+Image+Available' : poster_path = `https://image.tmdb.org/t/p/w300${poster_path}`;
                     const resultItem = {
                         id,
                         media_type,
-                        posterURL: poster_path,
-                        title,
-                        year
+                        imageURL: poster_path,
+                        releaseDate,
+                        title
                     };
                     resultList.push(resultItem);
                 }
