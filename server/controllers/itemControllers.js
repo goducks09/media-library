@@ -128,12 +128,14 @@ export const editUserItem = (req, res) => {
 };
 
 // DELTE route for removing item from user
-export const deleteUserItem = (req, res) => {
-    User.findByIdAndRemove(req.paramas._id, err => {
-        if(err) {
-				res.send({ message: "Server error. Please try again." });
-			} else {
-				res.send({ message: "Item deleted!" });
-			}
-    });
-}
+export const deleteUserItem = async (req, res) => {
+    const { userID } = req.body;
+    const saveResult = await User.findOneAndUpdate({ _id: userID }, { $pull: { ownedItems: { _id: req.params._id } } })
+        .populate({
+            path: 'ownedItems',
+            populate: {
+                path: 'itemID'
+            }
+        });
+    saveResult ? res.send({ message: 'Item deleted!' }) : res.send({ message: 'Database Error. Please try again.' });
+};
