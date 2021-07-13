@@ -10,6 +10,7 @@ import Home, {Add, Library, Search} from './src/navigators';
 import { Button, Platform } from 'react-native';
 import { StyledStandardSafeArea, StyledTextInput } from './src/config/globalStylesStyled';
 import SearchBar from "./src/components/searchBar";
+import ItemModal from './src/components/modal';
 
 export const UserContext = React.createContext();
 const Tab = createBottomTabNavigator();
@@ -123,6 +124,12 @@ export default function App() {
       // else add the new item
         setUserItems([...userItems, item]);
       }
+    },
+    removeUserItem: id => {
+      let items = [...userItems];
+      const index = items.findIndex(item => item._id === id);
+      items.splice(index, 1);
+      setUserItems(items);
     }
   };
 

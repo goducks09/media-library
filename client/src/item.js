@@ -5,7 +5,7 @@ import ItemModal from './components/modal';
 import { StyledButtonText, StyledRegularText, StyledRoundedButton, StyledRowView, StyledSmallText, StyledCenteredSafeArea, StyledSectionItem } from './config/globalStylesStyled';
 
 const Item = ({ route }) => {
-    const {userID, userItems, updateItemList} = useContext(UserContext);
+    const {removeUserItem, userID, userItems, updateItemList} = useContext(UserContext);
     const { itemID } = route.params;
     const [item, setItem] = useState(null);
     const [editing, setEditing] = useState(false);
@@ -23,7 +23,7 @@ const Item = ({ route }) => {
         setItem(item);
     };
 
-    const fetchTest = async (quality, media) => {
+    const updateItem = async (quality, media) => {
         try {
             let response = await fetch(`http://localhost:3000/items/${item._id}`, {
                 method: 'PUT',
@@ -44,13 +44,33 @@ const Item = ({ route }) => {
         }
     };
 
-    const editItem = () => {
-        setEditing(!editing);
-    }
+    const deleteItem = async () => {
+        try {
+            let response = await fetch(`http://localhost:3000/items/${item._id}`, {
+                method: 'DELETE',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userID
+                })
+            });
+            if (response.ok) removeUserItem(item._id);
+            let json = await response.json();
+            console.log('response: ', json);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-    const deleteItem = () => {
-        console.log("delete item");
-    }
+    const handleEdit = () => {
+        setEditing(!editing);
+    };
+
+    const handleDelete = () => {
+        deleteItem();
+    };
     
     return (
         <StyledCenteredSafeArea>
@@ -84,7 +104,7 @@ const Item = ({ route }) => {
                             <StyledRegularText>Media:
                                 <StyledSmallText> {item.mediaType}</StyledSmallText>
                             </StyledRegularText>
-                            <Pressable onPress={editItem}>
+                            <Pressable onPress={handleEdit}>
                                 <Image
                                     source={require('../assets/edit-24.png')}
                                     fadeDuration={0}
@@ -93,20 +113,19 @@ const Item = ({ route }) => {
                             </Pressable>
                         </StyledRowView>
 
-                        <StyledRoundedButton onPress={deleteItem}>
+                        <StyledRoundedButton onPress={handleDelete}>
                             <StyledButtonText>Delete</StyledButtonText>
                         </StyledRoundedButton>
                     </View>
                 </>
             }
-            {/* TODO fix modal updating state even when back is clicked */}
             {
                 editing &&
                 <ItemModal
                 item={item.itemID}
                 mediaType={item.mediaType}
                 modalOpen={setEditing}
-                onSubmit={fetchTest}
+                onSubmit={updateItem}
                 pictureQuality={item.pictureQuality}
                 setMediaType={setMediaType}
                 setPictureQuality={setPictureQuality}
