@@ -2,16 +2,15 @@ import React, {useContext, useEffect, useState} from 'react';
 import { Image, Pressable, View } from 'react-native';
 import { UserContext } from "../App";
 import ItemModal from './components/modal';
-import { StyledButtonText, StyledRegularText, StyledRoundedButton, StyledRowView, StyledSmallText, StyledCenteredSafeArea, StyledSectionItem } from './config/globalStylesStyled';
+import { StyledButtonText, StyledRegularText, StyledRoundedButton, StyledRowView, StyledSmallText, StyledCenteredSafeArea, StyledSectionItem, StyledView, ToastMessage } from './config/globalStylesStyled';
 
 const Item = ({ route }) => {
     const {removeUserItem, userID, userItems, updateItemList} = useContext(UserContext);
     const { itemID } = route.params;
     const [item, setItem] = useState(null);
     const [editing, setEditing] = useState(false);
-    const [pictureQuality, setPictureQuality] = useState(null);
-    const [mediaType, setMediaType] = useState(null);
-
+    const serverURL = 'https://floating-dawn-94898.herokuapp.com';
+    // const serverURL = 'http://localhost:3000';
     useEffect(() => {
         getItem();
     }, [itemID, userItems]);
@@ -25,10 +24,10 @@ const Item = ({ route }) => {
 
     const updateItem = async (quality, media) => {
         try {
-            let response = await fetch(`http://localhost:3000/items/${item._id}`, {
+            let response = await fetch(`${serverURL}/items/${item._id}`, {
                 method: 'PUT',
                 headers: {
-                    Accept: 'application/json',
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -39,6 +38,7 @@ const Item = ({ route }) => {
             });
             let json = await response.json();
             updateItemList(json.updatedItem, true);
+            // ToastMessage(json.message);
         } catch (error) {
             console.error(error);
         }
@@ -46,7 +46,7 @@ const Item = ({ route }) => {
 
     const deleteItem = async () => {
         try {
-            let response = await fetch(`http://localhost:3000/items/${item._id}`, {
+            let response = await fetch(`${serverURL}/items/${item._id}`, {
                 method: 'DELETE',
                 headers: {
                     Accept: 'application/json',
@@ -56,9 +56,9 @@ const Item = ({ route }) => {
                     userID
                 })
             });
-            if (response.ok) removeUserItem(item._id);
             let json = await response.json();
-            console.log('response: ', json);
+            if (response.ok) removeUserItem(item._id);
+            // ToastMessage(json.message);
         } catch (error) {
             console.error(error);
         }
@@ -80,7 +80,7 @@ const Item = ({ route }) => {
                         source={{ uri: `${item.itemID.imageURL}` }}
                         style={{ height: 175, width: 125, resizeMode: 'contain' }}
                     />
-                    <View>
+                    <StyledView>
                         <StyledRegularText>Starring:</StyledRegularText>
                         {/* only get first 5 actors to show */}
                         {item.itemID.actors.slice(0, 5).map((actor, index) =>
@@ -97,26 +97,30 @@ const Item = ({ route }) => {
                         }
                         {/* If an item is a tv show, it won't have a run time, so don't display */}
                         {item.itemID.runTime && <StyledRegularText>Runtime: <StyledSmallText>{item.itemID.runTime} min</StyledSmallText></StyledRegularText>}
+                        <StyledRegularText>Quality:
+                            <StyledSmallText> {item.pictureQuality}</StyledSmallText>
+                        </StyledRegularText>
+                        <StyledRegularText>Media:
+                            <StyledSmallText> {item.mediaType}</StyledSmallText>
+                        </StyledRegularText>
+
                         <StyledRowView>
-                            <StyledRegularText>Quality:
-                                <StyledSmallText> {item.pictureQuality}</StyledSmallText>
-                            </StyledRegularText>
-                            <StyledRegularText>Media:
-                                <StyledSmallText> {item.mediaType}</StyledSmallText>
-                            </StyledRegularText>
                             <Pressable onPress={handleEdit}>
                                 <Image
                                     source={require('../assets/edit-24.png')}
                                     fadeDuration={0}
-                                    style={{ width: 18, height: 18 }}
+                                    style={{ height: 24, margin: 5, width: 24 }}
+                                />
+                            </Pressable>
+                            <Pressable onPress={handleDelete}>
+                                <Image
+                                    source={require('../assets/delete-24.png')}
+                                    fadeDuration={0}
+                                    style={{ height: 24, margin: 5, width: 24 }}
                                 />
                             </Pressable>
                         </StyledRowView>
-
-                        <StyledRoundedButton onPress={handleDelete}>
-                            <StyledButtonText>Delete</StyledButtonText>
-                        </StyledRoundedButton>
-                    </View>
+                    </StyledView>
                 </>
             }
             {
@@ -127,8 +131,6 @@ const Item = ({ route }) => {
                 modalOpen={setEditing}
                 onSubmit={updateItem}
                 pictureQuality={item.pictureQuality}
-                setMediaType={setMediaType}
-                setPictureQuality={setPictureQuality}
                 />
             }
             </StyledCenteredSafeArea>

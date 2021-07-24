@@ -27,7 +27,7 @@ const SearchResult = ({navigation}) => {
 
     return (
         <StyledStandardSafeArea>
-            <SearchBar stateUpdater={setSearchValue} />
+            <SearchBar stateUpdater={setSearchValue} value={searchValue} />
             <StyledRowView>
                 {
                     result &&

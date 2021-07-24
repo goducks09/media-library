@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { debounce, first } from 'lodash';
-import { StyledButtonText, StyledCenteredSafeArea, StyledImage, StyledModalView, StyledPicker, StyledPressable, StyledRoundedButtonWide, StyledRowView, StyledSmallText, StyledTextInput } from './config/globalStylesStyled';
+import { StyledButtonText, StyledCenteredSafeArea, StyledImage, StyledModalView, StyledPicker, StyledPressable, StyledRoundedButtonWide, StyledRowView, StyledSmallText, ToastMessage } from './config/globalStylesStyled';
 import { FlatList, Modal } from 'react-native';
 import SearchBar from './components/searchBar';
 import { UserContext } from "../App";
 import ItemModal from './components/modal';
 
-// Item component that is rendered in Flatlits
+// Item component that is rendered in Flatlist
 const Item = ({ item, onPress }) => (
     <StyledRowView>
         <StyledPressable onPress={onPress}>
@@ -22,7 +22,7 @@ const AddItem = () => {
     const [itemToAdd, setItemToAdd] =useState(null);
     const [mediaType, setMediaType] = useState('Physical');
     const [pictureQuality, setPictureQuality] = useState('SD');
-    const [searchValue, setSearchValue] = useState(null);
+    const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResults] = useState(null);
     const {userID, updateItemList} = useContext(UserContext);
 
@@ -30,8 +30,8 @@ const AddItem = () => {
         searchValue && debouncedGetDetails(searchValue);
     }, [searchValue]);
 
-    // const serverURL = 'https://floating-dawn-94898.app.com';
-    const serverURL = 'http://localhost:3000';
+    const serverURL = 'https://floating-dawn-94898.herokuapp.com';
+    // const serverURL = 'http://localhost:3000';
     
     // Request to apiRoutes to find results based on user search
     const getItemsFromTmdbAsync = async (text) => {
@@ -39,7 +39,7 @@ const AddItem = () => {
             let response = await fetch(`${serverURL}/search`, {
                 method: 'POST',
                 headers: {
-                    Accept: 'application/json',
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -125,6 +125,7 @@ const AddItem = () => {
             let json = await response.json();
             if (json.newItem) {
                 updateItemList(json.newItem);
+                // ToastMessage(json.message);
             } else {
                 return;
             }
@@ -156,8 +157,6 @@ const AddItem = () => {
                     modalOpen={setItemToAdd}
                     onSubmit={handleSubmit}
                     pictureQuality={pictureQuality}
-                    setMediaType={setMediaType}
-                    setPictureQuality={setPictureQuality}
                 />
             }
         </StyledCenteredSafeArea>

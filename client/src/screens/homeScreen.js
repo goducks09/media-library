@@ -26,37 +26,43 @@ const HomeScreen = ({navigation}) => {
     return (
         <StyledStandardSafeArea style={styles.container}>
             <ScrollView contentContainerStyle={styles.scroll}>
-                {userItems[0] &&
+                {userItems[0] ?
+                    <>
+                        <StyledCenteredView>
+                            <StyledRegularText textAlign={'center'}>Recently Added</StyledRegularText>
+                            <View style={styles.row}>
+                            {userItems.slice(-3).map(item =>
+                                <ThumbnailItem item={item} key={item._id} onPress={handleItemPress} />
+                            )}    
+                            </View>
+                        </StyledCenteredView>
+
+                        <StyledCenteredView>
+                            <StyledRegularText textAlign={'center'}>View By</StyledRegularText>
+                            <StyledRowView>
+                                <StyledRoundedButton onPress={() => handleLibraryNavigationPress('title')}>
+                                    <StyledButtonText>Title</StyledButtonText>
+                                </StyledRoundedButton>
+                                <StyledRoundedButton onPress={() => handleLibraryNavigationPress('genre')}>
+                                    <StyledButtonText>Genre</StyledButtonText>
+                                </StyledRoundedButton>
+                                <StyledRoundedButton onPress={() => handleLibraryNavigationPress('actor')}>
+                                    <StyledButtonText>Actor</StyledButtonText>
+                                </StyledRoundedButton>
+                                <StyledRoundedButton onPress={() => handleLibraryNavigationPress('pq')}>
+                                    <StyledButtonText>PQ</StyledButtonText>
+                                </StyledRoundedButton>
+                                <StyledRoundedButtonWide onPress={handleRandomMoviePress}>
+                                    <StyledButtonText>Pick random item</StyledButtonText>
+                                </StyledRoundedButtonWide>
+                            </StyledRowView>
+                        </StyledCenteredView>
+                    </>
+                    :
                     <StyledCenteredView>
-                        <StyledRegularText textAlign={'center'}>Recently Added</StyledRegularText>
-                        <View style={styles.row}>
-                        {userItems.slice(-3).map(item =>
-                            <ThumbnailItem item={item} key={item._id} onPress={handleItemPress} />
-                        )}    
-                        </View>
+                        <StyledRegularText textAlign={'center'}>Looks like you need to add some items!</StyledRegularText>
                     </StyledCenteredView>
                 }
-
-                <StyledCenteredView>
-                    <StyledRegularText textAlign={'center'}>View By</StyledRegularText>
-                    <StyledRowView>
-                        <StyledRoundedButton onPress={() => handleLibraryNavigationPress('title')}>
-                            <StyledButtonText>Title</StyledButtonText>
-                        </StyledRoundedButton>
-                        <StyledRoundedButton onPress={() => handleLibraryNavigationPress('genre')}>
-                            <StyledButtonText>Genre</StyledButtonText>
-                        </StyledRoundedButton>
-                        <StyledRoundedButton onPress={() => handleLibraryNavigationPress('actor')}>
-                            <StyledButtonText>Actor</StyledButtonText>
-                        </StyledRoundedButton>
-                        <StyledRoundedButton onPress={() => handleLibraryNavigationPress('pq')}>
-                            <StyledButtonText>PQ</StyledButtonText>
-                        </StyledRoundedButton>
-                        <StyledRoundedButtonWide onPress={handleRandomMoviePress}>
-                            <StyledButtonText>Pick random item</StyledButtonText>
-                        </StyledRoundedButtonWide>
-                    </StyledRowView>
-                </StyledCenteredView>
             </ScrollView>
         </StyledStandardSafeArea>
     );
@@ -75,6 +81,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap'
     },
     scroll: {
+        flexGrow: 1,
         justifyContent: 'space-around'
     }
 });

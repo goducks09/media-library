@@ -4,7 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { StyledButtonText, StyledImage, StyledModalView, StyledPicker, StyledRoundedButtonWide, StyledSmallText } from "../config/globalStylesStyled";
 
 const ItemModal = props => {
-    const { item, mediaType, modalOpen, onSubmit, pictureQuality, setMediaType, setPictureQuality } = props;
+    const { item, mediaType, modalOpen, onSubmit, pictureQuality } = props;
     const [media, setMedia] = useState(mediaType);
     const [quality, setQuality] = useState(pictureQuality);
 

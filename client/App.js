@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
 import { makeRedirectUri, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
 import { GOOGLE_CLIENT_ID_EXPO, GOOGLE_CLIENT_ID_WEB } from './secrets';
 import { StatusBar } from 'expo-status-bar';
@@ -7,10 +8,15 @@ import { RootSiblingParent } from 'react-native-root-siblings';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home, {Add, Library, Search} from './src/navigators';
-import { Button, Platform } from 'react-native';
-import { StyledStandardSafeArea, StyledTextInput } from './src/config/globalStylesStyled';
+import { Button, Image, Platform } from 'react-native';
+import { StyledButtonText, StyledPressable, StyledStandardSafeArea, ToastMessage } from './src/config/globalStylesStyled';
 import SearchBar from "./src/components/searchBar";
 import ItemModal from './src/components/modal';
+import home from './assets/home-48.png';
+import search from './assets/search-48.png';
+import add from './assets/plus-48.png';
+import library from './assets/library-48.png';
+import * as SecureStore from 'expo-secure-store';
 
 export const UserContext = React.createContext();
 const Tab = createBottomTabNavigator();
@@ -19,51 +25,40 @@ WebBrowser.maybeCompleteAuthSession();
 const useProxy = Platform.select({ web: false, default: true });
 
 export default function App() {
-  const [userName, setUserName] = useState(null);
+  const [addNew, setAddNew] = useState(false);
   const [userID, setUserID] = useState(null);
   const [userItems, setUserItems] = useState([]);
-  
-  const discovery = useAutoDiscovery('https://dev-14030156.okta.com/oauth2/default');
-  const [request, response, promptAsync] = useAuthRequest(
-    {
-      clientId: '0oannsb0s70Gj7qpF5d6',
-      scopes: ['openid', 'profile'],
-      // For usage in managed apps using the proxy
-      redirectUri: makeRedirectUri({
-        // For usage in bare and standalone
-        native: 'com.okta.dev-14030156.okta.com:/callback',
-        useProxy,
-      }),
-    },
-    discovery
-  );
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    selectAccount: true,
+    expoClientId: '421500213015-sffcon0liumjdu9qqskq99qc9jgblboh.apps.googleusercontent.com',
+    webClientId: '421500213015-0ha9ogc3m9s547k1k6ptj6b7ddo2dcmm.apps.googleusercontent.com'
+  });
   const firstRender = useRef(true);
 
+  const getValueFor = async (key) => {
+    let result = await SecureStore.getItemAsync(key);
+    if (result) {
+      getUserInfo(result);
+    }
+  };
+  
   useEffect(() => {
     if (response?.type === 'success') {
-      const { code } = response.params;
+      const { authentication } = response;
+      googleLogin(authentication);
+    } else {
+      // ToastMessage('Your account could not be authenticated. Please try again. If you are using 2-step verification, you may need to make sure your device is listed as trusted in your Google account.');
     }
   }, [response]);
 
   // useEffect(() => {
-  //   googleLogin();
-  // }, [response]);
-  
-  useEffect(() => {
-    // Prevent request from sending prior to login being clicked
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    getUserInfoAsync(userName);
-  }, [userName]);
+  //   getValueFor('authenticatedUser');
+  // }, []);
   
   // User authenticates via Google and then use returned token to request user's Google profile
-  const googleLogin = async () => {
+  const googleLogin = async (authentication) => {
     try {
       if (response?.type === 'success') {
-        const test = response;
-        console.log(test);
         let apiResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
           headers: {
             Authorization: `Bearer ${authentication.accessToken}`
@@ -71,46 +66,79 @@ export default function App() {
         });
 
         if (!apiResponse.ok) {
+          // ToastMessage(`Sorry there was an error. Please try again. Error ${apiResponse.status}`);
           throw new Error(`Sorry there was an error. Please try again. Error ${apiResponse.status}`);
         }
 
         let json = await apiResponse.json();
-        setUserName(json.email);
+        // SecureStore.setItemAsync('authenticatedUser', json.email);
+        addNew ? createAccount(json.email) : getUserInfo(json.email);
       }
     } catch (err) {
+      // ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
       throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
     }
   };
 
-  const getUserInfoAsync = async id => {
+  const getUserInfo = async email => {
     try {
-      // let response = await fetch(`https://floating-dawn-94898.herokuapp.com/login`, {
-      let response = await fetch(`http://localhost:3000/login`, {
+      let response = await fetch(`https://floating-dawn-94898.herokuapp.com/login`, {
+      // let response = await fetch(`http://localhost:3000/login`, {
         method: 'POST',
         headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            userName: id
+          userName: email
         })
       });
       let json = await response.json();
-      setUserID(json.userID);
-      setUserItems(json.userItems);
+      // ToastMessage(json.message);
+      console.log(json.message);
+      if (json.userData) {
+        setUserID(json.userData.userID);
+        setUserItems(json.userData.userItems);
+      }
     } catch (err) {
+      // ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
       throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
     }
   };
 
-  const handleSignup = () => {
-    setUserName('test1');
+  const createAccount = async email => {
+    try {
+      let response = await fetch(`https://floating-dawn-94898.herokuapp.com/login`, {
+      // let response = await fetch(`http://localhost:3000/signup`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userName: email
+        })
+      });
+      let json = await response.json();
+      console.log(json.message);
+      // ToastMessage(json.message);
+      if (json.userID) {
+        setUserID(json.userID);
+      }
+    } catch (err) {
+      // ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
+      throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
+    }
+  };
+
+  const handleCreatePress = () => {
+    setAddNew(true);
+    promptAsync();
   };
 
   const contextValue = {
     userID,
     userItems,
-    userName,
     updateItemList: (item, update) => {
       // if the item is in userItems, find and update the item
       if (update) {
@@ -133,34 +161,44 @@ export default function App() {
     }
   };
 
+  // template for tab navigator icons
+  const TabNavIcon = icon => (
+    <Image
+      source={icon}
+      fadeDuration={0}
+      style={{ height: 24, width: 24 }}
+    />);
+
   return (
     <RootSiblingParent>
       {userID ? (
         <UserContext.Provider value={contextValue}>
           <NavigationContainer>
             <Tab.Navigator>
-              <Tab.Screen name="Home" component={Home} />
-              <Tab.Screen name="Search" component={Search} />
-              <Tab.Screen name="Add" component={Add} />
-              <Tab.Screen name="Library" component={Library} />
+              <Tab.Screen name="Home" component={Home}
+                options={{ tabBarIcon: () => <TabNavIcon icon={home}/>}}
+              />
+              <Tab.Screen name="Search" component={Search}
+                options={{ tabBarIcon: () => <TabNavIcon icon={search}/>}}
+              />
+              <Tab.Screen name="Add" component={Add}
+                options={{ tabBarIcon: () => <TabNavIcon icon={add}/>}}
+              />
+              <Tab.Screen name="Library" component={Library}
+                options={{ tabBarIcon: () => <TabNavIcon icon={library}/>}}
+              />
             </Tab.Navigator>
           </NavigationContainer>
           <StatusBar style="auto" />
         </UserContext.Provider>
       ) : (
         <StyledStandardSafeArea>
-          <StyledTextInput
-            placeholder='username'
-          />
-          <StyledTextInput
-            placeholder='password'
-          />
-            
-          <Button
-            disabled={!request}
-            title="Login with Google"
-            onPress={handleSignup}
-          />
+          <StyledPressable disabled={!request} onPress={promptAsync}>
+            <StyledButtonText>Login with Google</StyledButtonText>
+          </StyledPressable>
+          <StyledPressable onPress={handleCreatePress}>
+            <StyledButtonText>Create an Account</StyledButtonText>
+          </StyledPressable>
         </StyledStandardSafeArea>
         )
       }
