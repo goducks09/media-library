@@ -78,7 +78,7 @@ export const getAllUserItems = async (req, res) => {
 export const getSingleUserItem = (req, res) => {
     Item.findById(req.params._id, (err, item) => {
         if (err) {
-            res.send(err);
+            res.send({ message: 'Item not found' });
         }
         res.json(item);
     });
@@ -96,7 +96,7 @@ export const editUserItem = (req, res) => {
         })
         .exec((err, user) => {
             if (err) {
-                res.send(err);
+                res.send({ message: 'User not found'});
             }
             const item = user.ownedItems.id(req.params._id);
             item.mediaType = media;

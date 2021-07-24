@@ -5,7 +5,16 @@ const User = mongoose.model('User', UserSchema);
 
 // Add a new user
 export const addNewUser = (req, res) => {
-    const newUser = { username: req.body.username };
+    User.findOne({ username: req.body.userName }, async (err, user) => {
+        if (err) {
+            res.send({ message: `Sorry, there was an error. Error: ${err}` });
+        } else if (user) {
+            res.send({ message: 'Sorry, that email is already in use. Try logging in instead.' });
+        } else {
+            const newUser = await User.create({ username: req.body.userName });
+            newUser ? res.send({ message: 'User added!', userID: newUser._id }) : res.send({ message: 'There was an error creating your account. Please try again.' });
+        }
+    });
 };
 
 // On login, get user data and store in context
@@ -19,15 +28,15 @@ export const getUserData = (req, res) => {
     })
     .exec((err, user) => {
         if (err) {
-            res.send(err);
+            res.send({message: err});
         } else if (user === null || user === undefined) {
-            res.send({ message: 'User not found' });
+            res.send({ message: 'User not found. Please create an account' });
         } else {
             const userData = {
                 userID: user._id,
                 userItems: user.ownedItems
             }
-            res.json(userData);
+            res.json({ message: 'Logged In', userData });
         }
     });
 };

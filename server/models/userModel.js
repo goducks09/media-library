@@ -9,7 +9,6 @@ export const UserSchema = new Schema({
     mediaType: String,
     userTag: [String]
   }],
-  password: String,
   username: {
     type: String,
     unique: true
