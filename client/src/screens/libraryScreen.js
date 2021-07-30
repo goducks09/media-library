@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { TextInput, SectionList, Pressable } from 'react-native';
+import { TextInput, SectionList, Pressable, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { StyledPicker, StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledStandardSafeArea } from "../config/globalStylesStyled";
+import { StyledPicker, StyledPickerContainer, StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledStandardSafeArea } from "../config/globalStylesStyled";
 import { UserContext } from "../../App";
 
 const SortedDisplay = ({navigation, route}) => {
@@ -119,21 +119,23 @@ const SortedDisplay = ({navigation, route}) => {
 
     return (
         <StyledStandardSafeArea>
-            <Picker
-                style={{width: '50%', marginLeft: 'auto', marginRight: 'auto'}}
-                onValueChange={(itemValue) => {
-                    sectionedList(itemValue);
-                    setSortOrder(itemValue);
-                }}
-                selectedValue={sortOrder}
-                dropdownIconColor='#00C6CF'
-            >
-                <Picker.Item label="Title" value="title" />
-                <Picker.Item label="Actor" value="actor" />
-                <Picker.Item label="Director" value="director" />
-                <Picker.Item label="Genre" value="genre" />
-                <Picker.Item label="PQ" value="pq" />
-            </Picker>
+            <StyledPickerContainer>
+                <Picker
+                    dropdownIconColor={'#00C6CF'}
+                    onValueChange={(itemValue) => {
+                        sectionedList(itemValue);
+                        setSortOrder(itemValue);
+                    }}
+                    selectedValue={sortOrder}
+                    style={{ color: '#00C6CF' }}
+                >
+                    <Picker.Item label="Title" value="title" />
+                    <Picker.Item label="Actor" value="actor" />
+                    <Picker.Item label="Director" value="director" />
+                    <Picker.Item label="Genre" value="genre" />
+                    <Picker.Item label="PQ" value="pq" />
+                </Picker>
+            </StyledPickerContainer>
 
             <SectionList
                 contentContainerStyle={StyledSectionList}

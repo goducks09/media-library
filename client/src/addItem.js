@@ -1,7 +1,8 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { debounce, first } from 'lodash';
-import { StyledButtonText, StyledCenteredSafeArea, StyledImage, StyledModalView, StyledPicker, StyledPressable, StyledRoundedButtonWide, StyledRowView, StyledSmallText, ToastMessage } from './config/globalStylesStyled';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { FlatList, Modal } from 'react-native';
+import { debounce, first } from 'lodash';
+import { herokuServer, localServer, platform } from "../App";
+import { StyledButtonText, StyledCenteredSafeArea, StyledImage, StyledModalView, StyledPicker, StyledPressable, StyledRoundedButtonWide, StyledRowView, StyledSmallText, ToastMessage } from './config/globalStylesStyled';
 import SearchBar from './components/searchBar';
 import { UserContext } from "../App";
 import ItemModal from './components/modal';
@@ -25,18 +26,18 @@ const AddItem = () => {
     const [searchValue, setSearchValue] = useState('');
     const [searchResults, setSearchResults] = useState(null);
     const {userID, updateItemList} = useContext(UserContext);
+    const flatListRef = useRef();
 
     useEffect(() => {
         searchValue && debouncedGetDetails(searchValue);
     }, [searchValue]);
 
-    const serverURL = 'https://floating-dawn-94898.herokuapp.com';
-    // const serverURL = 'http://localhost:3000';
+    const server = platform === 'web' ? localServer : herokuServer;
     
     // Request to apiRoutes to find results based on user search
     const getItemsFromTmdbAsync = async (text) => {
         try {
-            let response = await fetch(`${serverURL}/search`, {
+            let response = await fetch(`${server}/search`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -48,6 +49,7 @@ const AddItem = () => {
             });
             let json = await response.json();
             setSearchResults(json);
+            flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
         } catch (error) {
             console.error(error);
         }
@@ -56,7 +58,7 @@ const AddItem = () => {
     // Request to apiRoutes to get detail info on specific item
     const fetchSingleItemFromTmdb = async ({ id, media_type }) => {
         try {
-            let response = await fetch(`${serverURL}/search/${media_type}/${id}`);
+            let response = await fetch(`${server}/search/${media_type}/${id}`);
             let json = await response.json();
             return json;
         } catch (error) {
@@ -109,7 +111,7 @@ const AddItem = () => {
     const handleSubmit = async (quality, media) => {
         try {
             const item = await fetchSingleItemFromTmdb(itemToAdd);
-            let response = await fetch(`${serverURL}/items`, {
+            let response = await fetch(`${server}/items`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -144,8 +146,9 @@ const AddItem = () => {
                 searchResults &&
                 <FlatList
                     data={searchResults}
-                    renderItem={renderItem}
                     keyExtractor={item => `${item.id}`}
+                    ref={flatListRef}
+                    renderItem={renderItem}
                 />
             }
 

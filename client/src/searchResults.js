@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import Fuse from 'fuse.js';
 import SearchBar from './components/searchBar';
 import ThumbnailItem from "./components/thumbnailItem";
-import { StyledRowView, StyledStandardSafeArea } from './config/globalStylesStyled';
+import { StyledRowViewWide, StyledStandardSafeArea } from './config/globalStylesStyled';
 import { UserContext } from "../App";
 
 const SearchResult = ({navigation}) => {
@@ -28,14 +28,14 @@ const SearchResult = ({navigation}) => {
     return (
         <StyledStandardSafeArea>
             <SearchBar stateUpdater={setSearchValue} value={searchValue} />
-            <StyledRowView>
+            <StyledRowViewWide>
                 {
                     result &&
                     result.map(i =>
                         <ThumbnailItem item={i.item} key={i.item._id} onPress={handleItemPress} />
                     )
                 }
-            </StyledRowView>
+            </StyledRowViewWide>
         </StyledStandardSafeArea>
 
     );

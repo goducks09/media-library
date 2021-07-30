@@ -1,7 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { Image, Pressable, View } from 'react-native';
-import { UserContext } from "../App";
+import { herokuServer, localServer, platform, UserContext } from "../App";
 import ItemModal from './components/modal';
+import ConfirmationBox from "./components/confirmationBox";
 import { StyledButtonText, StyledRegularText, StyledRoundedButton, StyledRowView, StyledSmallText, StyledCenteredSafeArea, StyledSectionItem, StyledView, ToastMessage } from './config/globalStylesStyled';
 
 const Item = ({ route }) => {
@@ -9,8 +10,8 @@ const Item = ({ route }) => {
     const { itemID } = route.params;
     const [item, setItem] = useState(null);
     const [editing, setEditing] = useState(false);
-    const serverURL = 'https://floating-dawn-94898.herokuapp.com';
-    // const serverURL = 'http://localhost:3000';
+    const server = platform === 'web' ? localServer : herokuServer;
+
     useEffect(() => {
         getItem();
     }, [itemID, userItems]);
@@ -24,7 +25,7 @@ const Item = ({ route }) => {
 
     const updateItem = async (quality, media) => {
         try {
-            let response = await fetch(`${serverURL}/items/${item._id}`, {
+            let response = await fetch(`${server}/items/${item._id}`, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
@@ -46,7 +47,7 @@ const Item = ({ route }) => {
 
     const deleteItem = async () => {
         try {
-            let response = await fetch(`${serverURL}/items/${item._id}`, {
+            let response = await fetch(`${server}/items/${item._id}`, {
                 method: 'DELETE',
                 headers: {
                     Accept: 'application/json',
@@ -69,7 +70,7 @@ const Item = ({ route }) => {
     };
 
     const handleDelete = () => {
-        deleteItem();
+        ConfirmationBox(deleteItem);
     };
     
     return (
@@ -126,11 +127,11 @@ const Item = ({ route }) => {
             {
                 editing &&
                 <ItemModal
-                item={item.itemID}
-                mediaType={item.mediaType}
-                modalOpen={setEditing}
-                onSubmit={updateItem}
-                pictureQuality={item.pictureQuality}
+                    item={item.itemID}
+                    mediaType={item.mediaType}
+                    modalOpen={setEditing}
+                    onSubmit={updateItem}
+                    pictureQuality={item.pictureQuality}
                 />
             }
             </StyledCenteredSafeArea>

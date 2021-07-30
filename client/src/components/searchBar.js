@@ -34,7 +34,7 @@ const SearchBar = (props, ref) => {
                 <Image
                     source={require('../../assets/cancel-48.png')}
                     fadeDuration={0}
-                    style={{ height: 16, margin: 5, width: 16 }}
+                    style={{ height: 16, margin: 10, width: 16 }}
                 />
             </TouchableOpacity>
         </StyledTextInputContainer>

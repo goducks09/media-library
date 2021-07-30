@@ -9,23 +9,30 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home, {Add, Library, Search} from './src/navigators';
 import { Button, Image, Platform } from 'react-native';
-import { StyledButtonText, StyledPressable, StyledStandardSafeArea, ToastMessage } from './src/config/globalStylesStyled';
+import { StyledButtonText, StyledCenteredSafeArea, StyledCenteredView, StyledLogin, StyledLoginView, ToastMessage } from './src/config/globalStylesStyled';
 import SearchBar from "./src/components/searchBar";
 import ItemModal from './src/components/modal';
-import home from './assets/home-48.png';
-import search from './assets/search-48.png';
-import add from './assets/plus-48.png';
-import library from './assets/library-48.png';
+const add = require('./assets/plus-48.png');
+const home = require('./assets/home-48.png');
+const library = require('./assets/library-48.png');
+const loader = require('./assets/loading-spinner.svg');
+const search = require('./assets/search-48.png');
 import * as SecureStore from 'expo-secure-store';
+import { LinearGradient } from 'expo';
+
+export const platform = Platform.OS;
+export const herokuServer = 'https://floating-dawn-94898.herokuapp.com';
+export const localServer = 'http://localhost:3000';
+const server = platform === 'web' ? localServer : herokuServer;
 
 export const UserContext = React.createContext();
 const Tab = createBottomTabNavigator();
-
+// For web: Possibly completes an authentication session on web in a window popup
 WebBrowser.maybeCompleteAuthSession();
-const useProxy = Platform.select({ web: false, default: true });
 
 export default function App() {
   const [addNew, setAddNew] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [userID, setUserID] = useState(null);
   const [userItems, setUserItems] = useState([]);
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -82,8 +89,8 @@ export default function App() {
 
   const getUserInfo = async email => {
     try {
-      let response = await fetch(`https://floating-dawn-94898.herokuapp.com/login`, {
-      // let response = await fetch(`http://localhost:3000/login`, {
+      setLoading(true);
+      let response = await fetch(`${server}/login`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -94,6 +101,7 @@ export default function App() {
         })
       });
       let json = await response.json();
+      setLoading(false);
       // ToastMessage(json.message);
       console.log(json.message);
       if (json.userData) {
@@ -101,6 +109,7 @@ export default function App() {
         setUserItems(json.userData.userItems);
       }
     } catch (err) {
+      setLoading(false);
       // ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
       throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
     }
@@ -108,7 +117,7 @@ export default function App() {
 
   const createAccount = async email => {
     try {
-      let response = await fetch(`https://floating-dawn-94898.herokuapp.com/login`, {
+      let response = await fetch(`https://floating-dawn-94898.herokuapp.com/signup`, {
       // let response = await fetch(`http://localhost:3000/signup`, {
         method: 'POST',
         headers: {
@@ -162,12 +171,35 @@ export default function App() {
   };
 
   // template for tab navigator icons
-  const TabNavIcon = icon => (
+  const TabNavIcon = ({icon}) => 
     <Image
       source={icon}
       fadeDuration={0}
       style={{ height: 24, width: 24 }}
-    />);
+    />
+  ;
+  
+  const Loader = () => (
+    <>
+      <StyledButtonText>Loading...</StyledButtonText>
+      <Image
+        source={require('./assets/loading-spinner.gif')}
+        fadeDuration={0}
+        style={{ height: 72, width: 72   }}
+      />
+    </>
+  );
+
+  const Login = () => (
+    <>
+      <StyledLogin disabled={!request} onPress={() => promptAsync()}>
+        <StyledButtonText>Login with Google</StyledButtonText>
+      </StyledLogin>
+      <StyledLogin disabled={!request} onPress={handleCreatePress}>
+        <StyledButtonText>Create an Account</StyledButtonText>
+      </StyledLogin>
+    </>
+  );
 
   return (
     <RootSiblingParent>
@@ -192,14 +224,12 @@ export default function App() {
           <StatusBar style="auto" />
         </UserContext.Provider>
       ) : (
-        <StyledStandardSafeArea>
-          <StyledPressable disabled={!request} onPress={promptAsync}>
-            <StyledButtonText>Login with Google</StyledButtonText>
-          </StyledPressable>
-          <StyledPressable onPress={handleCreatePress}>
-            <StyledButtonText>Create an Account</StyledButtonText>
-          </StyledPressable>
-        </StyledStandardSafeArea>
+          <StyledCenteredSafeArea>
+            <StyledLoginView>
+              {loading && <Loader />}
+              {!loading && <Login />}
+            </StyledLoginView>
+        </StyledCenteredSafeArea>
         )
       }
     </RootSiblingParent>

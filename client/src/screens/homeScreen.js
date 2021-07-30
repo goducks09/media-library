@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledRoundedButtonWide, StyledStandardSafeArea } from '../config/globalStylesStyled';
+import { ScrollView, StyleSheet } from 'react-native';
+import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledRoundedButtonWide, StyledCenteredSafeArea } from '../config/globalStylesStyled';
 import { UserContext } from "../../App";
 import ThumbnailItem from '../components/thumbnailItem';
 
@@ -24,17 +24,17 @@ const HomeScreen = ({navigation}) => {
     };
 
     return (
-        <StyledStandardSafeArea style={styles.container}>
+        <StyledCenteredSafeArea>
             <ScrollView contentContainerStyle={styles.scroll}>
                 {userItems[0] ?
                     <>
                         <StyledCenteredView>
                             <StyledRegularText textAlign={'center'}>Recently Added</StyledRegularText>
-                            <View style={styles.row}>
-                            {userItems.slice(-3).map(item =>
-                                <ThumbnailItem item={item} key={item._id} onPress={handleItemPress} />
-                            )}    
-                            </View>
+                            <StyledRowView>
+                                {userItems.slice(-3).map(item =>
+                                    <ThumbnailItem item={item} key={item._id} onPress={handleItemPress} />
+                                )}  
+                            </StyledRowView>
                         </StyledCenteredView>
 
                         <StyledCenteredView>
@@ -64,22 +64,11 @@ const HomeScreen = ({navigation}) => {
                     </StyledCenteredView>
                 }
             </ScrollView>
-        </StyledStandardSafeArea>
+        </StyledCenteredSafeArea>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-        backgroundColor: '#151515',
-        flex: 1,
-        padding: 16,
-    },
-    row: {
-        justifyContent: 'center',
-        flexDirection: 'row',
-        flexWrap: 'wrap'
-    },
     scroll: {
         flexGrow: 1,
         justifyContent: 'space-around'
