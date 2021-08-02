@@ -9,7 +9,6 @@ const HomeScreen = ({navigation}) => {
     const { userItems } = useContext(UserContext);
     
     const handleRandomMoviePress = () => {
-        //TODO make sure value doesn't duplicate and return same item twice
         const randomIndex = Math.floor(Math.random() * Math.floor(userItems.length));
         const item = userItems[randomIndex];
         navigation.navigate('Item Details', { itemID: item.itemID._id, title: item.itemID.title });

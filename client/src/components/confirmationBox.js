@@ -1,10 +1,9 @@
-import React from 'react';
-import { Alert, Button, View } from "react-native";
+import { Alert } from "react-native";
 
-const ConfirmationBox = handleConfirm => {
+const ConfirmationBox = (handleConfirm, action) => {
     Alert.alert(
-        "Are you sure?",
-        "message",
+        `Are you sure you want to ${action}?`,
+        null,
         [
             { text: "Cancel" },
             { text: "YES", onPress: handleConfirm }

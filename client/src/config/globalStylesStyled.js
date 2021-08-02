@@ -1,5 +1,4 @@
-// import Toast from 'react-native-root-toast';
-import { AuthError } from 'expo-auth-session';
+import Toast from 'react-native-root-toast';
 import styled from 'styled-components/native';
 
 export const StyledStandardSafeArea = styled.SafeAreaView`
@@ -167,9 +166,9 @@ export const StyledPickerContainer = styled.View`
     width: 67%;
 `;
 
-// export const ToastMessage = message =>
-//     Toast.show(message, {
-//         backgroundColor: '#00C6CF',
-//         duration: Toast.durations.LONG,
-//         position: -50
-//     });
+export const ToastMessage = message =>
+    Toast.show(message, {
+        backgroundColor: '#00C6CF',
+        duration: Toast.durations.LONG,
+        position: -50
+    });

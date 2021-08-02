@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { TextInput, SectionList, Pressable, View } from 'react-native';
+import { SectionList, Pressable } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { StyledPicker, StyledPickerContainer, StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledStandardSafeArea } from "../config/globalStylesStyled";
+import { StyledPickerContainer, StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledStandardSafeArea } from "../config/globalStylesStyled";
 import { UserContext } from "../../App";
 
 const SortedDisplay = ({navigation, route}) => {

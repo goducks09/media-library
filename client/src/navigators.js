@@ -1,14 +1,14 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import AddItem from './screens/addItem';
 import HomeScreen from './screens/homeScreen';
-import Item from './item';
+import Item from './screens/item';
+import SearchResult from "./screens/searchResults";
 import SortedDisplay from './screens/libraryScreen';
-import AddItem from './addItem';
-import SearchResult from "./searchResults";
 
+const AddItemStack = createStackNavigator();
 const HomeStack = createStackNavigator();
 const LibraryStack = createStackNavigator();
-const AddItemStack = createStackNavigator();
 const SearchStack = createStackNavigator();
 
 const headerOptions = {
@@ -22,6 +22,18 @@ const headerOptions = {
         fontWeight: 'bold',
         textAlign: 'center'
     }
+};
+
+export const Add = () => {
+    return (
+        <AddItemStack.Navigator
+        initialRouteName="Add"
+            screenOptions={headerOptions}
+        >
+            <AddItemStack.Screen component={AddItem} name="Add" />
+            <AddItemStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.title })} />
+        </AddItemStack.Navigator>
+    );
 };
 
 const Home = () => {
@@ -46,18 +58,6 @@ export const Library = () => {
             <LibraryStack.Screen component={SortedDisplay} name="Library" />
             <LibraryStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.title })} />
         </LibraryStack.Navigator>
-    );
-};
-
-export const Add = () => {
-    return (
-        <AddItemStack.Navigator
-            initialRouteName="Add"
-            screenOptions={headerOptions}
-        >
-            <AddItemStack.Screen component={AddItem} name="Add" />
-            <AddItemStack.Screen component={Item} name="Item Details" options={({ route }) => ({ title: route.params.title })} />
-        </AddItemStack.Navigator>
     );
 };
 

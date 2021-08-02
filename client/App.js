@@ -1,24 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { makeRedirectUri, useAuthRequest, useAutoDiscovery } from 'expo-auth-session';
-import { GOOGLE_CLIENT_ID_EXPO, GOOGLE_CLIENT_ID_WEB } from './secrets';
 import { StatusBar } from 'expo-status-bar';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Home, {Add, Library, Search} from './src/navigators';
-import { Button, Image, Platform } from 'react-native';
-import { StyledButtonText, StyledCenteredSafeArea, StyledCenteredView, StyledLogin, StyledLoginView, ToastMessage } from './src/config/globalStylesStyled';
-import SearchBar from "./src/components/searchBar";
-import ItemModal from './src/components/modal';
+import Home, { Add, Library, Search } from './src/navigators';
+import AccountScreen from "./src/screens/account";
+import { Image, Platform } from 'react-native';
+import { StyledButtonText, StyledCenteredSafeArea, StyledLogin, StyledLoginView, ToastMessage } from './src/config/globalStylesStyled';
 const add = require('./assets/plus-48.png');
 const home = require('./assets/home-48.png');
 const library = require('./assets/library-48.png');
-const loader = require('./assets/loading-spinner.svg');
 const search = require('./assets/search-48.png');
 import * as SecureStore from 'expo-secure-store';
-import { LinearGradient } from 'expo';
 
 export const platform = Platform.OS;
 export const herokuServer = 'https://floating-dawn-94898.herokuapp.com';
@@ -40,7 +35,6 @@ export default function App() {
     expoClientId: '421500213015-sffcon0liumjdu9qqskq99qc9jgblboh.apps.googleusercontent.com',
     webClientId: '421500213015-0ha9ogc3m9s547k1k6ptj6b7ddo2dcmm.apps.googleusercontent.com'
   });
-  const firstRender = useRef(true);
 
   const getValueFor = async (key) => {
     let result = await SecureStore.getItemAsync(key);
@@ -53,14 +47,14 @@ export default function App() {
     if (response?.type === 'success') {
       const { authentication } = response;
       googleLogin(authentication);
-    } else {
-      // ToastMessage('Your account could not be authenticated. Please try again. If you are using 2-step verification, you may need to make sure your device is listed as trusted in your Google account.');
+    } else if (response && response?.type !== 'success') {
+      ToastMessage('Your account could not be authenticated. Please try again. If you are using 2-step verification, you may need to make sure your device is listed as trusted in your Google account.');
     }
   }, [response]);
 
-  // useEffect(() => {
-  //   getValueFor('authenticatedUser');
-  // }, []);
+  useEffect(() => {
+    getValueFor('authenticatedUser');
+  }, []);
   
   // User authenticates via Google and then use returned token to request user's Google profile
   const googleLogin = async (authentication) => {
@@ -73,16 +67,16 @@ export default function App() {
         });
 
         if (!apiResponse.ok) {
-          // ToastMessage(`Sorry there was an error. Please try again. Error ${apiResponse.status}`);
+          ToastMessage(`Sorry there was an error. Please try again. Error ${apiResponse.status}`);
           throw new Error(`Sorry there was an error. Please try again. Error ${apiResponse.status}`);
         }
 
         let json = await apiResponse.json();
-        // SecureStore.setItemAsync('authenticatedUser', json.email);
+        SecureStore.setItemAsync('authenticatedUser', json.email);
         addNew ? createAccount(json.email) : getUserInfo(json.email);
       }
     } catch (err) {
-      // ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
+      ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
       throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
     }
   };
@@ -102,23 +96,21 @@ export default function App() {
       });
       let json = await response.json();
       setLoading(false);
-      // ToastMessage(json.message);
-      console.log(json.message);
+      ToastMessage(json.message);
       if (json.userData) {
         setUserID(json.userData.userID);
         setUserItems(json.userData.userItems);
       }
     } catch (err) {
       setLoading(false);
-      // ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
+      ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
       throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
     }
   };
 
   const createAccount = async email => {
     try {
-      let response = await fetch(`https://floating-dawn-94898.herokuapp.com/signup`, {
-      // let response = await fetch(`http://localhost:3000/signup`, {
+      let response = await fetch(`${server}/signup`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -129,13 +121,12 @@ export default function App() {
         })
       });
       let json = await response.json();
-      console.log(json.message);
-      // ToastMessage(json.message);
+      ToastMessage(json.message);
       if (json.userID) {
         setUserID(json.userID);
       }
     } catch (err) {
-      // ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
+      ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
       throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
     }
   };
@@ -181,7 +172,7 @@ export default function App() {
   
   const Loader = () => (
     <>
-      <StyledButtonText>Loading...</StyledButtonText>
+      <StyledButtonText>Loading</StyledButtonText>
       <Image
         source={require('./assets/loading-spinner.gif')}
         fadeDuration={0}
@@ -219,6 +210,7 @@ export default function App() {
               <Tab.Screen name="Library" component={Library}
                 options={{ tabBarIcon: () => <TabNavIcon icon={library}/>}}
               />
+              <Tab.Screen name="Account" component={AccountScreen} />
             </Tab.Navigator>
           </NavigationContainer>
           <StatusBar style="auto" />

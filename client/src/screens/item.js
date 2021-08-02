@@ -1,9 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { Image, Pressable, View } from 'react-native';
-import { herokuServer, localServer, platform, UserContext } from "../App";
-import ItemModal from './components/modal';
-import ConfirmationBox from "./components/confirmationBox";
-import { StyledButtonText, StyledRegularText, StyledRoundedButton, StyledRowView, StyledSmallText, StyledCenteredSafeArea, StyledSectionItem, StyledView, ToastMessage } from './config/globalStylesStyled';
+import { Image, Pressable } from 'react-native';
+import { herokuServer, localServer, platform, UserContext } from "../../App";
+import ItemModal from '../components/modal';
+import ConfirmationBox from "../components/confirmationBox";
+import { StyledRegularText, StyledRowView, StyledSmallText, StyledCenteredSafeArea, StyledSectionItem, StyledView, ToastMessage } from '../config/globalStylesStyled';
 
 const Item = ({ route }) => {
     const {removeUserItem, userID, userItems, updateItemList} = useContext(UserContext);
@@ -39,7 +39,7 @@ const Item = ({ route }) => {
             });
             let json = await response.json();
             updateItemList(json.updatedItem, true);
-            // ToastMessage(json.message);
+            ToastMessage(json.message);
         } catch (error) {
             console.error(error);
         }
@@ -59,7 +59,7 @@ const Item = ({ route }) => {
             });
             let json = await response.json();
             if (response.ok) removeUserItem(item._id);
-            // ToastMessage(json.message);
+            ToastMessage(json.message);
         } catch (error) {
             console.error(error);
         }
@@ -70,7 +70,7 @@ const Item = ({ route }) => {
     };
 
     const handleDelete = () => {
-        ConfirmationBox(deleteItem);
+        ConfirmationBox(deleteItem, 'delete');
     };
     
     return (
@@ -108,14 +108,14 @@ const Item = ({ route }) => {
                         <StyledRowView>
                             <Pressable onPress={handleEdit}>
                                 <Image
-                                    source={require('../assets/edit-24.png')}
+                                    source={require('../../assets/edit-24.png')}
                                     fadeDuration={0}
                                     style={{ height: 24, margin: 5, width: 24 }}
                                 />
                             </Pressable>
                             <Pressable onPress={handleDelete}>
                                 <Image
-                                    source={require('../assets/delete-24.png')}
+                                    source={require('../../assets/delete-24.png')}
                                     fadeDuration={0}
                                     style={{ height: 24, margin: 5, width: 24 }}
                                 />

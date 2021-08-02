@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import { Modal } from "react-native";
 import { Picker } from '@react-native-picker/picker';
 import { StyledButtonText, StyledImage, StyledModalView, StyledPickerContainer, StyledRoundedButtonWide, StyledSmallText } from "../config/globalStylesStyled";

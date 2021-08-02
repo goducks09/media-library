@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity } from 'react-native';
 import { StyledTextInput, StyledTextInputContainer } from '../config/globalStylesStyled';
 
 const SearchBar = (props, ref) => {
@@ -13,10 +13,6 @@ const SearchBar = (props, ref) => {
             searchBar.current.focus();
         }
     }, []);
-
-    const onChangeText = (text, stateUpdater) => {
-        stateUpdater(text);
-    };
 
     return (
         <StyledTextInputContainer>

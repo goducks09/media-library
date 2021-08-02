@@ -1,5 +1,4 @@
 import React from 'react';
-import { Pressable } from "react-native";
 import { StyledImage, StyledPressableImage } from "../config/globalStylesStyled";
 
 const ThumbnailItem = props => {

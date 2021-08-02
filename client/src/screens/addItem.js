@@ -1,11 +1,11 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { FlatList, Modal } from 'react-native';
-import { debounce, first } from 'lodash';
-import { herokuServer, localServer, platform } from "../App";
-import { StyledButtonText, StyledCenteredSafeArea, StyledImage, StyledModalView, StyledPicker, StyledPressable, StyledRoundedButtonWide, StyledRowView, StyledSmallText, ToastMessage } from './config/globalStylesStyled';
-import SearchBar from './components/searchBar';
-import { UserContext } from "../App";
-import ItemModal from './components/modal';
+import { FlatList } from 'react-native';
+import { debounce } from 'lodash';
+import { herokuServer, localServer, platform } from "../../App";
+import { StyledCenteredSafeArea, StyledImage, StyledPressable, StyledRowView, StyledSmallText, ToastMessage } from '../config/globalStylesStyled';
+import SearchBar from '../components/searchBar';
+import { UserContext } from "../../App";
+import ItemModal from '../components/modal';
 
 // Item component that is rendered in Flatlist
 const Item = ({ item, onPress }) => (
@@ -66,36 +66,6 @@ const AddItem = () => {
         }
     };
 
-    //manipulate results from API call to only get details needed for displaying
-    // const getDetails = (text) => {
-    //     getItemsFromTmdbAsync(text)
-    //     .then(resultList => {
-            // let resultList = [];
-            // results.forEach(result => {
-            //     if (result.media_type !== 'person') {
-            //         let { first_air_date, id, media_type, name, poster_path, release_date, title } = result;
-            //         console.log('type: ', media_type);
-            //         console.log('title: ', title);
-            //         console.log('name: ', name);
-            //         if (!title) title = name;
-            //         if (!release_date) release_date = first_air_date;
-            //         if (title.length > 20) title = title.slice(0, 17).concat('...');
-            //         let year;
-            //         release_date ? year = release_date.substring(0, 4) : year = '';
-            //         const resultItem = {
-            //             id,
-            //             media_type,
-            //             posterURL: `https://image.tmdb.org/t/p/w92/${poster_path}`,
-            //             title,
-            //             year
-            //         };
-            //         resultList.push(resultItem);
-            //     }
-            // });
-            // setSearchResults(resultList);
-    //     });
-    // }
-
     //use debounce when sending request to minimize api hits. Takes text from input
     const debouncedGetDetails = useCallback(
         debounce(text => getItemsFromTmdbAsync(text), 1200),
@@ -127,7 +97,7 @@ const AddItem = () => {
             let json = await response.json();
             if (json.newItem) {
                 updateItemList(json.newItem);
-                // ToastMessage(json.message);
+                ToastMessage(json.message);
             } else {
                 return;
             }

@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
 import Fuse from 'fuse.js';
-import SearchBar from './components/searchBar';
-import ThumbnailItem from "./components/thumbnailItem";
-import { StyledRowViewWide, StyledStandardSafeArea } from './config/globalStylesStyled';
-import { UserContext } from "../App";
+import SearchBar from '../components/searchBar';
+import ThumbnailItem from "../components/thumbnailItem";
+import { StyledRowViewWide, StyledStandardSafeArea } from '../config/globalStylesStyled';
+import { UserContext } from "../../App";
 
 const SearchResult = ({navigation}) => {
     const [searchValue, setSearchValue] = useState('');

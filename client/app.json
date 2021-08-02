@@ -1,15 +1,16 @@
 {
   "expo": {
-    "name": "MovieLibrary",
-    "slug": "MovieLibrary",
     "version": "1.0.0",
+    "name": "MovieLibrary",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "slug": "MovieLibrary",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#151515"
     },
+    "scheme": "movielib",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -28,6 +29,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": ""
+    "description": "A simple way to catalog your movies and TV shows"
   }
 }
