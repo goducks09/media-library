@@ -42,3 +42,13 @@ export const getUserData = (req, res) => {
 };
 
 // Delete a user
+export const deleteUser = (req, res) => {
+    console.log('request');
+    User.deleteOne({ _id: req.body.id }, err => {
+        if (err) {
+            res.status(500).send({ message: `Sorry, there was a server error. Please try again.` });
+        } else {
+            res.status(200).send({ message: 'Account deleted!' });
+        }
+    });
+};

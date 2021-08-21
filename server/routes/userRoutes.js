@@ -1,4 +1,4 @@
-import { addNewUser, getUserData } from "../controllers/userControllers";
+import { addNewUser, deleteUser, getUserData } from "../controllers/userControllers";
 
 const userRoutes = app => {
     app.route('/login')
@@ -6,6 +6,9 @@ const userRoutes = app => {
     
     app.route('/signup')
         .post(addNewUser);
+    
+    app.route('/delete')
+        .delete(deleteUser);
 };
 
 export default userRoutes;

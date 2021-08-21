@@ -105,26 +105,6 @@ export const editUserItem = (req, res) => {
                 result ? res.send({ message: 'Item updated!', updatedItem: item }) : res.send({ message: 'Database Error. Please try again.' });
         });
     });
-    // const saveResult = await User.findOneAndUpdate({ _id: req.body.userID }, { $push: { ownedItems: itemToAdd } }, { new: true })
-    //         .populate({
-    //             path: 'ownedItems',
-    //             populate: {
-    //                 path: 'itemID'
-    //             }
-    //         });
-    //     saveResult ?
-    //         res.send({ message: 'Item added successfully!', userItems: saveResult.ownedItems })
-    // User.findByIdAndUpdate(
-    //     req.params._id,
-    //     // { information to change },
-    //     (err, item) => {
-    //         if (err) {
-    //             res.send({ message: 'Server error. Please try again.' });
-    //         } else {
-    //             res.send({ message: 'Item updated!' });
-    //         }
-    //     }
-    // );
 };
 
 // DELTE route for removing item from user
