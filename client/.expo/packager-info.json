@@ -1,10 +1,10 @@
 {
   "webpackServerPort": null,
-  "expoServerPort": 19001,
+  "expoServerPort": 19000,
   "expoServerNgrokUrl": "https://9p-gxr.cwpulver.client.exp.direct",
   "packagerNgrokUrl": "https://packager.9p-gxr.cwpulver.client.exp.direct",
-  "ngrokPid": 17440,
-  "packagerPort": 19001,
+  "ngrokPid": 23000,
+  "packagerPort": 19000,
   "packagerPid": null,
   "devToolsPort": 19002
 }

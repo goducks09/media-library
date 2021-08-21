@@ -98,7 +98,9 @@ const AddItem = () => {
             if (json.newItem) {
                 updateItemList(json.newItem);
                 ToastMessage(json.message);
+                // console.log(json.message);
             } else {
+                ToastMessage(json.message);
                 return;
             }
         } catch (err) {
@@ -130,6 +132,7 @@ const AddItem = () => {
                     modalOpen={setItemToAdd}
                     onSubmit={handleSubmit}
                     pictureQuality={pictureQuality}
+                    type={'add'}
                 />
             }
         </StyledCenteredSafeArea>

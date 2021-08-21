@@ -1,12 +1,12 @@
 import React, {useContext} from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
-import { StyledRowView, StyledButtonText, StyledCenteredView, StyledRegularText, StyledRoundedButton, StyledRoundedButtonWide, StyledCenteredSafeArea } from '../config/globalStylesStyled';
+import { StyledButtonText, StyledCenteredSafeArea, StyledCenteredView, StyledLoginView, StyledRegularText, StyledRoundedButton, StyledRoundedButtonWide, StyledRowView } from '../config/globalStylesStyled';
 import { UserContext } from "../../App";
 import ThumbnailItem from '../components/thumbnailItem';
 
 
 const HomeScreen = ({navigation}) => {
-    const { userItems } = useContext(UserContext);
+    const { deviceDimensions, userItems } = useContext(UserContext);
     
     const handleRandomMoviePress = () => {
         const randomIndex = Math.floor(Math.random() * Math.floor(userItems.length));
@@ -28,7 +28,7 @@ const HomeScreen = ({navigation}) => {
                 {userItems[0] ?
                     <>
                         <StyledCenteredView>
-                            <StyledRegularText textAlign={'center'}>Recently Added</StyledRegularText>
+                            <StyledRegularText textAlign={'center'} style={{marginBottom: 15}}>Recently Added</StyledRegularText>
                             <StyledRowView>
                                 {userItems.slice(-3).map(item =>
                                     <ThumbnailItem item={item} key={item._id} onPress={handleItemPress} />
@@ -37,8 +37,8 @@ const HomeScreen = ({navigation}) => {
                         </StyledCenteredView>
 
                         <StyledCenteredView>
-                            <StyledRegularText textAlign={'center'}>View By</StyledRegularText>
-                            <StyledRowView>
+                            <StyledRegularText textAlign={'center'} style={{marginBottom: 15}}>View By</StyledRegularText>
+                            <StyledRowView direction={deviceDimensions.height > 700 ? 'column' : null}>
                                 <StyledRoundedButton onPress={() => handleLibraryNavigationPress('title')}>
                                     <StyledButtonText>Title</StyledButtonText>
                                 </StyledRoundedButton>
@@ -58,9 +58,9 @@ const HomeScreen = ({navigation}) => {
                         </StyledCenteredView>
                     </>
                     :
-                    <StyledCenteredView>
+                    <StyledLoginView>
                         <StyledRegularText textAlign={'center'}>Looks like you need to add some items!</StyledRegularText>
-                    </StyledCenteredView>
+                    </StyledLoginView>
                 }
             </ScrollView>
         </StyledCenteredSafeArea>

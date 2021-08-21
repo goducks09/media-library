@@ -14,11 +14,13 @@ const SearchStack = createStackNavigator();
 const headerOptions = {
     headerStyle: {
         backgroundColor: '#151515',
-        borderBottomWidth: 0
+        borderBottomWidth: 0,
+        borderColor: '#151515',
+        shadowOffset: {height: 0}
     },
     headerTintColor: '#00C6CF',
     headerTitleStyle: {
-        fontSize: 38,
+        fontSize: 34,
         fontWeight: 'bold',
         textAlign: 'center'
     }

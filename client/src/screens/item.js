@@ -1,16 +1,23 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { Image, Pressable } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
 import { herokuServer, localServer, platform, UserContext } from "../../App";
 import ItemModal from '../components/modal';
 import ConfirmationBox from "../components/confirmationBox";
-import { StyledRegularText, StyledRowView, StyledSmallText, StyledCenteredSafeArea, StyledSectionItem, StyledView, ToastMessage } from '../config/globalStylesStyled';
+import { StyledCenteredSafeArea, StyledFullHeightView, StyledImageContainer, StyledRegularText, StyledRowView, StyledSectionItem, StyledShrinkView, StyledSmallText, ToastMessage } from '../config/globalStylesStyled';
 
-const Item = ({ route }) => {
-    const {removeUserItem, userID, userItems, updateItemList} = useContext(UserContext);
+const Item = ({ navigation, route }) => {
+    const {deviceDimensions, removeUserItem, userID, userItems, updateItemList} = useContext(UserContext);
     const { itemID } = route.params;
     const [item, setItem] = useState(null);
     const [editing, setEditing] = useState(false);
     const server = platform === 'web' ? localServer : herokuServer;
+    let height = 175;
+    let width = 125;
+    if (deviceDimensions.height > 700) {
+        height = 220;
+        width = 184;
+    }
 
     useEffect(() => {
         getItem();
@@ -40,6 +47,7 @@ const Item = ({ route }) => {
             let json = await response.json();
             updateItemList(json.updatedItem, true);
             ToastMessage(json.message);
+            // console.log(json.message);
         } catch (error) {
             console.error(error);
         }
@@ -59,7 +67,9 @@ const Item = ({ route }) => {
             });
             let json = await response.json();
             if (response.ok) removeUserItem(item._id);
+            navigation.dispatch(CommonActions.goBack());
             ToastMessage(json.message);
+            // console.log(json.message);
         } catch (error) {
             console.error(error);
         }
@@ -76,12 +86,14 @@ const Item = ({ route }) => {
     return (
         <StyledCenteredSafeArea>
             {item &&
-                <>
-                    <Image
-                        source={{ uri: `${item.itemID.imageURL}` }}
-                        style={{ height: 175, width: 125, resizeMode: 'contain' }}
-                    />
-                    <StyledView>
+                <StyledFullHeightView>
+                    <StyledImageContainer>
+                        <Image
+                            source={{ uri: `${item.itemID.imageURL}` }}
+                            style={{ flex: 1, height: height, resizeMode: 'contain', width: width }}
+                        />
+                    </StyledImageContainer>
+                    <StyledShrinkView>
                         <StyledRegularText>Starring:</StyledRegularText>
                         {/* only get first 5 actors to show */}
                         {item.itemID.actors.slice(0, 5).map((actor, index) =>
@@ -110,19 +122,19 @@ const Item = ({ route }) => {
                                 <Image
                                     source={require('../../assets/edit-24.png')}
                                     fadeDuration={0}
-                                    style={{ height: 24, margin: 5, width: 24 }}
+                                    style={{ height: 24, marginHorizontal: 5, marginVertical: 20, width: 24 }}
                                 />
                             </Pressable>
                             <Pressable onPress={handleDelete}>
                                 <Image
                                     source={require('../../assets/delete-24.png')}
                                     fadeDuration={0}
-                                    style={{ height: 24, margin: 5, width: 24 }}
+                                    style={{ height: 24, marginHorizontal: 5, marginVertical: 20, width: 24 }}
                                 />
                             </Pressable>
                         </StyledRowView>
-                    </StyledView>
-                </>
+                    </StyledShrinkView>
+                </StyledFullHeightView>
             }
             {
                 editing &&
@@ -132,6 +144,7 @@ const Item = ({ route }) => {
                     modalOpen={setEditing}
                     onSubmit={updateItem}
                     pictureQuality={item.pictureQuality}
+                    type={'update'}
                 />
             }
             </StyledCenteredSafeArea>

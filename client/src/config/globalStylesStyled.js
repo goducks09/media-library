@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 export const StyledStandardSafeArea = styled.SafeAreaView`
     background-color: #151515;
     flex: 1;
-    padding: 16px;
+    padding: 24px;
 `;
 export const StyledSpacedSafeArea = styled(StyledStandardSafeArea)`
     justify-content: space-around;
@@ -14,26 +14,31 @@ export const StyledCenteredSafeArea = styled(StyledStandardSafeArea)`
     align-items: center;
 `;
 
-export const StyledView = styled.View`
-    width: 75%;
+export const StyledFullHeightView = styled.View`
+    height: 100%;
+    maxHeight: 100%;
+`;
+
+export const StyledShrinkView = styled.View`
+    flex: 0 1 auto;
+    justifyContent: space-around;
 `;
 
 export const StyledCenteredView = styled.View`
     flex: 1 auto;
-    justify-content: space-around;
+    justify-content: center;
     text-align: center;
 `;
 
 export const StyledLoginView = styled(StyledCenteredView)`
     align-items: center;
-    justify-content: center;
-    width: 90%;
+    min-width: 90%;
 `;
 
 export const StyledRowView = styled.View`
     align-items: center;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: ${props => props.direction || 'row'};
+    flex-wrap: ${props => props.direction ? 'nowrap': 'wrap'};
     justify-content: space-around;
     max-width: 450px;
 `;
@@ -62,7 +67,9 @@ export const StyledSmallText = styled(StyledRegularText)`
 `;
 
 export const StyledPageHeader = styled(StyledRegularText)`
-    font-size: 32px;
+    font-size: 34px;
+    font-weight: bold;
+    margin-top: 16px;
 `;
 
 export const StyledButtonText = styled(StyledRegularText)`
@@ -88,8 +95,8 @@ export const StyledSectionItem = styled(StyledRegularText)`
 
 export const StyledRoundedButton = styled.TouchableOpacity`
     align-items: center;
-    background-color: ${props => props.backgroundColor || '#151515'}
-    border-color: #00C6CF;
+    background-color: ${props => props.backgroundColor || '#151515'};
+    border-color: ${props => props.borderColor || '#00C6CF'};
     border-radius: 28px;
     border-width: 2px;
     margin: 5px auto;
@@ -99,6 +106,7 @@ export const StyledRoundedButton = styled.TouchableOpacity`
 
 export const StyledRoundedButtonWide = styled(StyledRoundedButton)`
     max-width: 450px;
+    min-width: 250px;
     width: 90%;
 `
 
@@ -110,10 +118,13 @@ export const StyledPressable = styled.Pressable`
 `;
 
 export const StyledLogin = styled(StyledPressable)`
+    align-items: center;
     border: #00C6CF;
     border-radius: 28px;
+    flex-direction: column;
     justify-content: center;
     margin-bottom: 20px;
+    min-width: 90%;
 `;
 
 export const StyledTextInput = styled.TextInput`
@@ -130,6 +141,7 @@ export const StyledTextInput = styled.TextInput`
 `;
 
 export const StyledTextInputContainer = styled.View`
+    align-self: center;
     border: 1px solid #00C6CF;
     border-radius: 28px;
     elevation: 1;
@@ -138,6 +150,7 @@ export const StyledTextInputContainer = styled.View`
     shadow-offset: { width: 1, height: 2 };
     shadow-opacity: 0.8;
     shadow-radius: 2px;
+    width: 90%;
 `;
 
 export const StyledPressableImage = styled.Pressable`
@@ -149,14 +162,15 @@ export const StyledImage = styled.Image`
     width: 92px;
 `;
 
-export const StyledPicker = styled.Picker`
-    color: #00C6CF;
-    font-size: 18px;
-    height: 40px;
-    min-height: 40px;
-    padding-left: 15px;
-    width: 100%;
-`;
+export const DropdownStyles = {
+    iconContainer: { top: 13, right: 12 },
+    inputAndroid: {
+        color: '#00C6CF', fontSize: 18, paddingVertical: 10, paddingRight: 12, textAlign: 'center'
+    },
+    inputIOS: {
+        color: '#00C6CF', fontSize: 18, paddingVertical: 10, paddingRight: 12, textAlign: 'center'
+    }
+};
 
 export const StyledPickerContainer = styled.View`
     border: 1px solid #00C6CF;
@@ -166,9 +180,16 @@ export const StyledPickerContainer = styled.View`
     width: 67%;
 `;
 
+export const StyledImageContainer = styled.View`
+    align-self: center;
+    flex: 1 auto;
+    width: 100%;
+`;
+
 export const ToastMessage = message =>
     Toast.show(message, {
-        backgroundColor: '#00C6CF',
+        backgroundColor: '#E90C59',
         duration: Toast.durations.LONG,
-        position: -50
+        opacity: 0.9,
+        position: -80
     });

@@ -1,7 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { SectionList, Pressable } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { StyledPickerContainer, StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledStandardSafeArea } from "../config/globalStylesStyled";
+import RNPickerSelect from 'react-native-picker-select';
+import { AntDesign } from '@expo/vector-icons';
+import { DropdownStyles, StyledPickerContainer, StyledSectionHeading, StyledSectionItem, StyledSectionList, StyledStandardSafeArea } from "../config/globalStylesStyled";
 import { UserContext } from "../../App";
 
 const SortedDisplay = ({navigation, route}) => {
@@ -120,21 +121,25 @@ const SortedDisplay = ({navigation, route}) => {
     return (
         <StyledStandardSafeArea>
             <StyledPickerContainer>
-                <Picker
-                    dropdownIconColor={'#00C6CF'}
+                <RNPickerSelect
+                    Icon={() => {
+                        return <AntDesign name="caretdown" size={16} color="#00C6CF" />
+                    }}
+                    items={[
+                        { label: "Title", value: "title" },
+                        { label: "Actor", value: "actor" },
+                        { label: "Director", value: "director" },
+                        { label: "Genre", value: "genre" },
+                        { label: "PQ", value: "pq" }
+                    ]}
                     onValueChange={(itemValue) => {
                         sectionedList(itemValue);
                         setSortOrder(itemValue);
                     }}
-                    selectedValue={sortOrder}
-                    style={{ color: '#00C6CF' }}
-                >
-                    <Picker.Item label="Title" value="title" />
-                    <Picker.Item label="Actor" value="actor" />
-                    <Picker.Item label="Director" value="director" />
-                    <Picker.Item label="Genre" value="genre" />
-                    <Picker.Item label="PQ" value="pq" />
-                </Picker>
+                    placeholder={{}}
+                    style={DropdownStyles}
+                    value={sortOrder}
+                />
             </StyledPickerContainer>
 
             <SectionList
