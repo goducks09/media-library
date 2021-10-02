@@ -11,12 +11,15 @@ const SearchResult = ({navigation}) => {
 
     // Fuse fuzzy search setup
     const options = {
+        distance: 0,
         // Search in 'actors', 'director', and 'title' to find match. Higher weight = higher in search result. Default = 1
         keys: [
             { name: 'itemID.actors.fullName', weight: 2.5 },
             { name: 'itemID.director.fullName', weight: 1.5 },
             { name: 'itemID.title', weight: 5 }
-        ]
+        ],
+        minMatchCharLength: 2,
+        threshold: 0.2
     };
     const fuse = new Fuse(userItems, options);
     const result = fuse.search(searchValue);

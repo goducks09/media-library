@@ -3,7 +3,7 @@
   "expoServerPort": 19000,
   "expoServerNgrokUrl": "https://9p-gxr.cwpulver.client.exp.direct",
   "packagerNgrokUrl": "https://packager.9p-gxr.cwpulver.client.exp.direct",
-  "ngrokPid": 23000,
+  "ngrokPid": 1612,
   "packagerPort": 19000,
   "packagerPid": null,
   "devToolsPort": 19002

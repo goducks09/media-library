@@ -5,6 +5,7 @@ import { herokuServer, localServer, platform, UserContext } from "../../App";
 import ItemModal from '../components/modal';
 import ConfirmationBox from "../components/confirmationBox";
 import { StyledCenteredSafeArea, StyledFullHeightView, StyledImageContainer, StyledRegularText, StyledRowView, StyledSectionItem, StyledShrinkView, StyledSmallText, ToastMessage } from '../config/globalStylesStyled';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const Item = ({ navigation, route }) => {
     const {deviceDimensions, removeUserItem, userID, userItems, updateItemList} = useContext(UserContext);
@@ -12,8 +13,8 @@ const Item = ({ navigation, route }) => {
     const [item, setItem] = useState(null);
     const [editing, setEditing] = useState(false);
     const server = platform === 'web' ? localServer : herokuServer;
-    let height = 175;
-    let width = 125;
+    let height = 138;
+    let width = 92;
     if (deviceDimensions.height > 700) {
         height = 220;
         width = 184;
@@ -90,33 +91,35 @@ const Item = ({ navigation, route }) => {
                     <StyledImageContainer>
                         <Image
                             source={{ uri: `${item.itemID.imageURL}` }}
-                            style={{ flex: 1, height: height, resizeMode: 'contain', width: width }}
+                            style={{ alignSelf: 'center', height: height, resizeMode: 'contain', width: width }}
                         />
                     </StyledImageContainer>
                     <StyledShrinkView>
-                        <StyledRegularText>Starring:</StyledRegularText>
-                        {/* only get first 5 actors to show */}
-                        {item.itemID.actors.slice(0, 5).map((actor, index) =>
-                            <StyledSectionItem key={index}>{actor.fullName}</StyledSectionItem>
-                        )}
-                        {/* If an item is a tv show, it won't have a director, so don't display */}
-                        {
-                            item.itemID.director[0] &&
-                            <StyledRegularText>Director:
-                                {item.itemID.director.map((director, index) =>
-                                    <StyledSmallText key={index}>{(index ? ', ' : ' ') + director.fullName}</StyledSmallText>
-                                )}
+                        <ScrollView persistentScrollbar indicatorStyle='white' >
+                            <StyledRegularText>Starring:</StyledRegularText>
+                            {/* only get first 5 actors to show */}
+                            {item.itemID.actors.slice(0, 5).map((actor, index) =>
+                                <StyledSectionItem key={index}>{actor.fullName}</StyledSectionItem>
+                            )}
+                            {/* If an item is a tv show, it won't have a director, so don't display */}
+                            {
+                                item.itemID.director[0] &&
+                                <StyledRegularText>Director:
+                                    {item.itemID.director.map((director, index) =>
+                                        <StyledSmallText key={index}>{(index ? ', ' : ' ') + director.fullName}</StyledSmallText>
+                                    )}
+                                </StyledRegularText>
+                            }
+                            {/* If an item is a tv show, it won't have a run time, so don't display */}
+                            {item.itemID.runTime && <StyledRegularText>Runtime: <StyledSmallText>{item.itemID.runTime} min</StyledSmallText></StyledRegularText>}
+                            <StyledRegularText>Quality:
+                                <StyledSmallText> {item.pictureQuality}</StyledSmallText>
                             </StyledRegularText>
-                        }
-                        {/* If an item is a tv show, it won't have a run time, so don't display */}
-                        {item.itemID.runTime && <StyledRegularText>Runtime: <StyledSmallText>{item.itemID.runTime} min</StyledSmallText></StyledRegularText>}
-                        <StyledRegularText>Quality:
-                            <StyledSmallText> {item.pictureQuality}</StyledSmallText>
-                        </StyledRegularText>
-                        <StyledRegularText>Media:
-                            <StyledSmallText> {item.mediaType}</StyledSmallText>
-                        </StyledRegularText>
-
+                            <StyledRegularText>Media:
+                                <StyledSmallText> {item.mediaType}</StyledSmallText>
+                            </StyledRegularText>
+                        </ScrollView>
+                        </StyledShrinkView>
                         <StyledRowView>
                             <Pressable onPress={handleEdit}>
                                 <Image
@@ -133,7 +136,6 @@ const Item = ({ navigation, route }) => {
                                 />
                             </Pressable>
                         </StyledRowView>
-                    </StyledShrinkView>
                 </StyledFullHeightView>
             }
             {

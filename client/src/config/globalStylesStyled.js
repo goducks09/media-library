@@ -20,8 +20,10 @@ export const StyledFullHeightView = styled.View`
 `;
 
 export const StyledShrinkView = styled.View`
-    flex: 0 1 auto;
-    justifyContent: space-around;
+    align-items: center;
+    flex-shrink: 1;
+    justify-content: space-around;
+    min-width: 90%;
 `;
 
 export const StyledCenteredView = styled.View`
@@ -49,10 +51,16 @@ export const StyledRowViewWide = styled(StyledRowView)`
 
 export const StyledModalView = styled.View`
     align-items: center;
-    background-color: #151515;
     flex: 1;
     justify-content: space-around;
-    padding: 30% 0;
+    max-height: 525px;
+    padding: 10% 0;
+`;
+
+export const StyledModalContainer = styled.View`
+    background-color: #151515;
+    justify-content: center;
+    flex: 1;
 `;
 
 export const StyledRegularText = styled.Text`
@@ -182,7 +190,7 @@ export const StyledPickerContainer = styled.View`
 
 export const StyledImageContainer = styled.View`
     align-self: center;
-    flex: 1 auto;
+    margin-bottom: 10px;
     width: 100%;
 `;
 
