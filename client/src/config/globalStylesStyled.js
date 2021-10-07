@@ -14,8 +14,9 @@ export const StyledCenteredSafeArea = styled(StyledStandardSafeArea)`
     align-items: center;
 `;
 
-export const StyledFullHeightView = styled.View`
+export const StyledFullCenteredView = styled.View`
     height: 100%;
+    justify-content: center;
     maxHeight: 100%;
 `;
 

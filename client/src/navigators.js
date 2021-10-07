@@ -12,6 +12,7 @@ const LibraryStack = createStackNavigator();
 const SearchStack = createStackNavigator();
 
 const headerOptions = {
+    headerBackTitleVisible: false,
     headerStyle: {
         backgroundColor: '#151515',
         borderBottomWidth: 0,

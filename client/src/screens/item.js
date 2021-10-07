@@ -4,7 +4,7 @@ import { CommonActions } from '@react-navigation/native';
 import { herokuServer, localServer, platform, UserContext } from "../../App";
 import ItemModal from '../components/modal';
 import ConfirmationBox from "../components/confirmationBox";
-import { StyledCenteredSafeArea, StyledFullHeightView, StyledImageContainer, StyledRegularText, StyledRowView, StyledSectionItem, StyledShrinkView, StyledSmallText, ToastMessage } from '../config/globalStylesStyled';
+import { StyledCenteredSafeArea, StyledFullCenteredView, StyledImageContainer, StyledRegularText, StyledRowView, StyledSectionItem, StyledShrinkView, StyledSmallText, ToastMessage } from '../config/globalStylesStyled';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const Item = ({ navigation, route }) => {
@@ -87,7 +87,7 @@ const Item = ({ navigation, route }) => {
     return (
         <StyledCenteredSafeArea>
             {item &&
-                <StyledFullHeightView>
+                <StyledFullCenteredView>
                     <StyledImageContainer>
                         <Image
                             source={{ uri: `${item.itemID.imageURL}` }}
@@ -95,7 +95,7 @@ const Item = ({ navigation, route }) => {
                         />
                     </StyledImageContainer>
                     <StyledShrinkView>
-                        <ScrollView persistentScrollbar indicatorStyle='white' >
+                        <ScrollView persistentScrollbar indicatorStyle='white' style={{flexGrow: 0}} >
                             <StyledRegularText>Starring:</StyledRegularText>
                             {/* only get first 5 actors to show */}
                             {item.itemID.actors.slice(0, 5).map((actor, index) =>
@@ -119,24 +119,24 @@ const Item = ({ navigation, route }) => {
                                 <StyledSmallText> {item.mediaType}</StyledSmallText>
                             </StyledRegularText>
                         </ScrollView>
-                        </StyledShrinkView>
-                        <StyledRowView>
-                            <Pressable onPress={handleEdit}>
-                                <Image
-                                    source={require('../../assets/edit-24.png')}
-                                    fadeDuration={0}
-                                    style={{ height: 24, marginHorizontal: 5, marginVertical: 20, width: 24 }}
-                                />
-                            </Pressable>
-                            <Pressable onPress={handleDelete}>
-                                <Image
-                                    source={require('../../assets/delete-24.png')}
-                                    fadeDuration={0}
-                                    style={{ height: 24, marginHorizontal: 5, marginVertical: 20, width: 24 }}
-                                />
-                            </Pressable>
-                        </StyledRowView>
-                </StyledFullHeightView>
+                    </StyledShrinkView>
+                    <StyledRowView>
+                        <Pressable onPress={handleEdit}>
+                            <Image
+                                source={require('../../assets/edit-24.png')}
+                                fadeDuration={0}
+                                style={{ height: 24, marginHorizontal: 5, marginVertical: 20, width: 24 }}
+                            />
+                        </Pressable>
+                        <Pressable onPress={handleDelete}>
+                            <Image
+                                source={require('../../assets/delete-24.png')}
+                                fadeDuration={0}
+                                style={{ height: 24, marginHorizontal: 5, marginVertical: 20, width: 24 }}
+                            />
+                        </Pressable>
+                    </StyledRowView>
+                </StyledFullCenteredView>
             }
             {
                 editing &&
