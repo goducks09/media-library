@@ -12,5 +12,8 @@ export const UserSchema = new Schema({
   username: {
     type: String,
     unique: true
+  },
+  key: {
+    type: String
   }
 });

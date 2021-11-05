@@ -4,19 +4,14 @@ import apiRoutes from "./routes/apiRoutes";
 import itemRoutes from "./routes/itemRoutes";
 import userRoutes from "./routes/userRoutes";
 require('dotenv').config();
-    
 const app = express();
 const port = process.env.PORT || 3000;
 
 //if there are cors errors, npm i cors
-//app.use(cors());
+// app.use(cors());
 
 //mongoDB connection
-mongoose.connect(process.env.ATLAS_URI, {
-  useFindAndModify: false,
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+mongoose.connect(process.env.ATLAS_URI);
 
 //express setup
 app.use(express.urlencoded({ extended: true }));

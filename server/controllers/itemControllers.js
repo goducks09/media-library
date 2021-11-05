@@ -58,19 +58,21 @@ export const getAllUserItems = async (req, res) => {
     
     // Populate allows for referencing of nested item subdocuments. This references each user item to access title, actors, etc.
     if (req.body.item) {
-       return getItems.execPopulate({
+        const items = await getItems.populate({
             path: 'ownedItems',
             populate: {
                 path: 'itemID'
             }
         });
+        return items;
     } else {
-        res.json(getItems.populate({
+        const items = await getItems.populate({
             path: 'ownedItems',
             populate: {
                 path: 'itemID'
             }
-        }));
+        });
+        res.json(items);
     }    
 };
 
