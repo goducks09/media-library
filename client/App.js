@@ -12,22 +12,18 @@ import AccountScreen from "./src/screens/account";
 import { Image, Platform, useWindowDimensions } from 'react-native';
 import { StyledButtonText, StyledCenteredSafeArea, StyledLogin, StyledLoginView, ToastMessage } from './src/config/globalStylesStyled';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-const account = require('./assets/account-48.png');
-const add = require('./assets/plus-48.png');
-const home = require('./assets/home-48.png');
-const library = require('./assets/library-48.png');
-const search = require('./assets/search-48.png');
 import * as SecureStore from 'expo-secure-store';
 
 //Environment settings
 export const platform = Platform.OS;
 export const herokuServer = 'https://floating-dawn-94898.herokuapp.com';
+export const devServer = 'https://powerful-bastion-78639.herokuapp.com';
 export const localServer = 'http://localhost:3000';
-const server = platform === 'web' ? localServer : herokuServer;
+const server = platform === 'web' ? localServer : devServer;
 
 // Navigation
 const Tab = createBottomTabNavigator();
-  // For web: Possibly completes an authentication session on web in a window popup
+  // For web: closes window popup when auth complete
 WebBrowser.maybeCompleteAuthSession();
 
 export const UserContext = React.createContext();
@@ -44,62 +40,65 @@ export default function App() {
     webClientId: '421500213015-0ha9ogc3m9s547k1k6ptj6b7ddo2dcmm.apps.googleusercontent.com'
   });
 
+  // makes sure icons are loaded prior to displaying screen
   const loadAssetsAsync = async () => {
     await Font.loadAsync(MaterialCommunityIcons.font);
   };
 
+  // Get device dimensions for use in React Context
   const deviceDimensions = {
     height: useWindowDimensions().height,
     width: useWindowDimensions().width
   }
-
-  const getValueFor = async (key) => {
-    let result = await SecureStore.getItemAsync(key);
-    if (result) {
-      getUserInfo(result);
-    }
-  };
   
+  useEffect(() => {
+    (async () => {
+      const user = await SecureStore.getItemAsync('authenticatedUser');
+      const key = await SecureStore.getItemAsync('key');
+      console.log(user); 
+      console.log(key); 
+      if (user && key) {
+        getUserInfo(user, key);
+      }
+    })
+  }, []);
+
+  // Request authentication through Google when clicking "Create Account" or "Google Login"
   useEffect(() => {
     if (response?.type === 'success') {
       const { authentication } = response;
-      googleLogin(authentication);
+      googleAuth(authentication);
     } else if (response?.type === 'error') {
       ToastMessage('Your account could not be authenticated. Please try again. If you are using 2-step verification, you may need to make sure your device is listed as trusted in your Google account.');
     }
   }, [response]);
-
-  useEffect(() => {
-    getValueFor('authenticatedUser');
-  }, []);
   
-  // User authenticates via Google and then use returned token to request user's Google profile
-  const googleLogin = async (authentication) => {
+  // Use Google auth to get user information and either create new account or update the user key
+  const googleAuth = async (authentication) => {
     try {
       if (response?.type === 'success') {
-        let apiResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+        const googleResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
           headers: {
             Authorization: `Bearer ${authentication.accessToken}`
           },
         });
-
-        if (!apiResponse.ok) {
-          ToastMessage(`Sorry there was an error. Please try again. Error ${apiResponse.status}`);
-          // throw new Error(`Sorry there was an error. Please try again. Error ${apiResponse.status}`);
+        if (!googleResponse.ok) {
+          ToastMessage(`Sorry there was an error. Please try again. Error here ${googleResponse.status}`);
+        } else {
+          const json = await googleResponse.json();
+          const username = json.email;
+          const key = authentication.accessToken;
+          setLoading(true);
+          addNew ? createAccount(username, key) : updateUserAndLogin(username, key);
         }
-
-        let json = await apiResponse.json();
-        SecureStore.setItemAsync('authenticatedUser', json.email);
-        addNew ? createAccount(json.email) : getUserInfo(json.email);
-        setAddNew(false);
       }
     } catch (err) {
-      ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
-      // throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
+        ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
     }
   };
 
-  const getUserInfo = async email => {
+  // For use when username and key are stored in SecureStore to login user
+  const getUserInfo = async (username, key) => {
     try {
       setLoading(true);
       let response = await fetch(`${server}/login`, {
@@ -109,24 +108,27 @@ export default function App() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          userName: email
+          username,
+          key
         })
       });
+
       let json = await response.json();
       setLoading(false);
       ToastMessage(json.message);
+
       if (json.userData) {
         setUserID(json.userData.userID);
         setUserItems(json.userData.userItems);
       }
     } catch (err) {
       setLoading(false);
-      ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
-      // throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
+      ToastMessage(`Sorry there was an error. Please try again. Error ${err.message}`);
     }
   };
 
-  const createAccount = async email => {
+  // For "Create Account" login option. 
+  const createAccount = async (username, key) => {
     try {
       let response = await fetch(`${server}/signup`, {
         method: 'POST',
@@ -135,18 +137,22 @@ export default function App() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          userName: email
+          username,
+          key
         })
       });
       let json = await response.json();
+      setLoading(false);
       ToastMessage(json.message);
       if (json.userID) {
         setUserID(json.userID);
       }
     } catch (err) {
-      ToastMessage(`Sorry there was an error. Please try again. Error ${err}`);
-      // throw new Error(`Sorry there was an error. Please try again. Error ${err}`);
+      setLoading(false);
+      ToastMessage(`Sorry there was an error. Please try again. Error ${err.message}`);
     }
+
+    setAddNew(false);
   };
 
   const handleCreatePress = () => {
@@ -154,18 +160,54 @@ export default function App() {
     promptAsync();
   };
 
+  // For "Google Login" option. Make request to DB to update authorization key and login user
+  const updateUserAndLogin = async (username, key) => {
+    try {
+      const updateDb = await fetch(`${server}/update`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username,
+          key
+        })
+      });
+      const updatedJson = await updateDb.json();
+      if (!updateDb.ok) {
+        setLoading(false);
+        ToastMessage(`${updatedJson.message}`);
+      } else {
+        SecureStore.setItemAsync('authenticatedUser', username);
+        SecureStore.setItemAsync('key', key);
+      
+        setLoading(false);
+
+        if (updatedJson.userData) {
+          setUserID(updatedJson.userData.userID);
+          setUserItems(updatedJson.userData.userItems);
+        }
+      }
+    } catch (err) {
+      setLoading(false);
+      ToastMessage(`Sorry there was an error. Please try again. Error ${err.message}`);
+    }
+  };
+
+  // React Context setup
   const contextValue = {
     userID,
     userItems,
     logoutUser: async deleted => {
-      // promise only returns value on rejection
-      const deleteFailure = await SecureStore.deleteItemAsync('authenticatedUser');
-      // const deleteFailure = false;
-      if (!deleteFailure) {
+      // deleteItemAsync only returns value on rejection
+      const deleteUserFailure = await SecureStore.deleteItemAsync('authenticatedUser');
+      const deleteKeyFailure = await SecureStore.deleteItemAsync('key');
+
+      if (!deleteUserFailure && !deleteKeyFailure) {
         setUserID(null);
         setUserItems([]);
         !deleted ? ToastMessage('You have been logged out') : null;
-        // !deleted ? console.log('You have been logged out') : null;
       } else {
         ToastMessage(`Sorry we ran into an error. Please reload the app.`);
       }
@@ -192,15 +234,6 @@ export default function App() {
     },
     deviceDimensions
   };
-
-  // template for tab navigator icons
-  const TabNavIcon = ({icon}) => 
-    <Image
-      source={icon}
-      fadeDuration={0}
-      style={{ height: 24, width: 24 }}
-    />
-  ;
   
   const Loader = () => (
     <>
@@ -208,7 +241,7 @@ export default function App() {
       <Image
         source={require('./assets/loading-spinner.gif')}
         fadeDuration={0}
-        style={{ height: 72, width: 72   }}
+        style={{ height: 72, width: 72 }}
       />
     </>
   );

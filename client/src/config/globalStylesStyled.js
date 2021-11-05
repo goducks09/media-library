@@ -83,6 +83,7 @@ export const StyledPageHeader = styled(StyledRegularText)`
 
 export const StyledButtonText = styled(StyledRegularText)`
     font-size: 24px;
+    text-align: center;
 `;
 
 export const StyledSectionList = {

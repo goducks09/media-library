@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { Image, Pressable } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
-import { herokuServer, localServer, platform, UserContext } from "../../App";
+import { devServer, herokuServer, localServer, platform, UserContext } from "../../App";
 import ItemModal from '../components/modal';
 import ConfirmationBox from "../components/confirmationBox";
 import { StyledCenteredSafeArea, StyledFullCenteredView, StyledImageContainer, StyledRegularText, StyledRowView, StyledSectionItem, StyledShrinkView, StyledSmallText, ToastMessage } from '../config/globalStylesStyled';
@@ -12,7 +12,7 @@ const Item = ({ navigation, route }) => {
     const { itemID } = route.params;
     const [item, setItem] = useState(null);
     const [editing, setEditing] = useState(false);
-    const server = platform === 'web' ? localServer : herokuServer;
+    const server = platform === 'web' ? localServer : devServer;
     let height = 138;
     let width = 92;
     if (deviceDimensions.height > 700) {

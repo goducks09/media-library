@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { FlatList } from 'react-native';
 import { debounce } from 'lodash';
-import { herokuServer, localServer, platform } from "../../App";
+import { devServer, herokuServer, localServer, platform } from "../../App";
 import { StyledCenteredSafeArea, StyledImage, StyledPressable, StyledRowView, StyledSmallText, ToastMessage } from '../config/globalStylesStyled';
 import SearchBar from '../components/searchBar';
 import { UserContext } from "../../App";
@@ -32,7 +32,7 @@ const AddItem = () => {
         searchValue && debouncedGetDetails(searchValue);
     }, [searchValue]);
 
-    const server = platform === 'web' ? localServer : herokuServer;
+    const server = platform === 'web' ? localServer : devServer;
     
     // Request to apiRoutes to find results based on user search
     const getItemsFromTmdbAsync = async (text) => {
