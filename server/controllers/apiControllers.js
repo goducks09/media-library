@@ -1,6 +1,8 @@
-const fetch = require('node-fetch');
+import * as fetch from 'node-fetch';
+import { body, param } from 'express-validator';
 
 export const tmdbMultiSearch = async (req, res) => {
+    await body('searchText').escape().run(req);
     try {
         let response = await fetch(
             `https://api.themoviedb.org/3/search/multi?&language=en-US&query=${req.body.searchText}&page=1&adult=false`,
@@ -41,6 +43,8 @@ export const tmdbMultiSearch = async (req, res) => {
 
 // Query TMDB and manipulate return to only pass through pertinent data for saving to Mongo
 export const tmdbSingleSearch = async (req, res) => {
+    await param('mediaType').escape().run(req);
+    await param('itemID').escape().run(req);
     try {
         let response = await fetch(
             `https://api.themoviedb.org/3/${req.params.mediaType}/${req.params.itemID}?&language=en-US&adult=false&append_to_response=credits`,

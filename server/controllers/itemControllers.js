@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { body, param } from 'express-validator';
 import { ItemSchema } from "../models/itemModel";
 import { UserSchema } from "../models/userModel";
 
@@ -7,6 +8,10 @@ const User = mongoose.model('User', UserSchema);
 
 // POST route for adding a new item to user
 export const addNewItem = async (req, res) => {
+    await body('media').escape().run(req);
+    await body('quality').escape().run(req);
+    await body('userID').escape().run(req);
+
     let item = await findItem(req);
     // If item doesn't already exist, add to DB
     if (!item) {
@@ -48,12 +53,14 @@ export const addNewItem = async (req, res) => {
 
 // Helper function to check if Item has already been added to DB
 const findItem = async (req) => {
+    await body('tmdbID').escape().run(req);
     const search = Item.findOne({ tmdbID: req.body.item.tmdbID });
     return await search.exec();
 };
 
 // GET route for retrieving all user items
 export const getAllUserItems = async (req, res) => {
+    await body('userID').escape().run(req);
     const getItems = await User.findById(req.body.userID);
     
     // Populate allows for referencing of nested item subdocuments. This references each user item to access title, actors, etc.
@@ -77,7 +84,8 @@ export const getAllUserItems = async (req, res) => {
 };
 
 // GET route for retrieving information of a single item
-export const getSingleUserItem = (req, res) => {
+export const getSingleUserItem = async (req, res) => {
+    await param('_id').escape().run(req);
     Item.findById(req.params._id, (err, item) => {
         if (err) {
             res.send({ message: 'Item not found' });
@@ -87,7 +95,11 @@ export const getSingleUserItem = (req, res) => {
 };
 
 // PUT route for editing a single user item
-export const editUserItem = (req, res) => {
+export const editUserItem = async (req, res) => {
+    await body('media').escape().run(req);
+    await body('quality').escape().run(req);
+    await body('userID').escape().run(req);
+    await param('_id').escape().run(req);
     const { media, quality, userID } = req.body;
     User.findById(userID)
         .populate({
@@ -111,6 +123,8 @@ export const editUserItem = (req, res) => {
 
 // DELTE route for removing item from user
 export const deleteUserItem = async (req, res) => {
+    await body('userID').escape().run(req);
+    await param('_id').escape().run(req);
     const { userID } = req.body;
     const saveResult = await User.findOneAndUpdate({ _id: userID }, { $pull: { ownedItems: { _id: req.params._id } } })
         .populate({
