@@ -12,7 +12,7 @@ const Item = ({ navigation, route }) => {
     const { itemID } = route.params;
     const [item, setItem] = useState(null);
     const [editing, setEditing] = useState(false);
-    const server = platform === 'web' ? localServer : devServer;
+    const server = platform === 'web' ? localServer : herokuServer;
     let height = 138;
     let width = 92;
     if (deviceDimensions.height > 700) {

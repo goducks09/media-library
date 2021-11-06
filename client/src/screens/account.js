@@ -6,7 +6,7 @@ import { StyledButtonText, StyledCenteredSafeArea, StyledLoginView, StyledPageHe
 const AccountScreen = () => {
     const { logoutUser, userID } = useContext(UserContext);
     
-    const server = platform === 'web' ? localServer : devServer;
+    const server = platform === 'web' ? localServer : herokuServer;
     const deleteAccount = async () => {
         try {
             let response = await fetch(`${server}/delete`, {

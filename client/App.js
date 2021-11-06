@@ -19,7 +19,7 @@ export const platform = Platform.OS;
 export const herokuServer = 'https://floating-dawn-94898.herokuapp.com';
 export const devServer = 'https://powerful-bastion-78639.herokuapp.com';
 export const localServer = 'http://localhost:3000';
-const server = platform === 'web' ? localServer : devServer;
+const server = platform === 'web' ? localServer : herokuServer;
 
 // Navigation
 const Tab = createBottomTabNavigator();
@@ -55,12 +55,10 @@ export default function App() {
     (async () => {
       const user = await SecureStore.getItemAsync('authenticatedUser');
       const key = await SecureStore.getItemAsync('key');
-      console.log(user); 
-      console.log(key); 
       if (user && key) {
         getUserInfo(user, key);
       }
-    })
+    })()
   }, []);
 
   // Request authentication through Google when clicking "Create Account" or "Google Login"
@@ -179,8 +177,8 @@ export default function App() {
         setLoading(false);
         ToastMessage(`${updatedJson.message}`);
       } else {
-        SecureStore.setItemAsync('authenticatedUser', username);
-        SecureStore.setItemAsync('key', key);
+        // SecureStore.setItemAsync('authenticatedUser', username);
+        // SecureStore.setItemAsync('key', key);
       
         setLoading(false);
 

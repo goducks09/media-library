@@ -32,7 +32,7 @@ const AddItem = () => {
         searchValue && debouncedGetDetails(searchValue);
     }, [searchValue]);
 
-    const server = platform === 'web' ? localServer : devServer;
+    const server = platform === 'web' ? localServer : herokuServer;
     
     // Request to apiRoutes to find results based on user search
     const getItemsFromTmdbAsync = async (text) => {
