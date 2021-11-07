@@ -142,8 +142,11 @@ export default function App() {
       let json = await response.json();
       setLoading(false);
       ToastMessage(json.message);
+
       if (json.userID) {
         setUserID(json.userID);
+        SecureStore.setItemAsync('authenticatedUser', username);
+        SecureStore.setItemAsync('key', key);
       }
     } catch (err) {
       setLoading(false);
@@ -177,8 +180,8 @@ export default function App() {
         setLoading(false);
         ToastMessage(`${updatedJson.message}`);
       } else {
-        // SecureStore.setItemAsync('authenticatedUser', username);
-        // SecureStore.setItemAsync('key', key);
+        SecureStore.setItemAsync('authenticatedUser', username);
+        SecureStore.setItemAsync('key', key);
       
         setLoading(false);
 
